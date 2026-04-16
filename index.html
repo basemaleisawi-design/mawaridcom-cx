@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="html-root">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>مواردكم — نظام إدارة تجربة العميل</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════ Variables ═══════════════ */
+:root{
+  --dark:#021c66; --primary:#1b347e; --mid:#3a62ab; --light:#1fa6df; --sky:#8dd8f8;
+  --accent:#e8a020; --accent-d:#c4861a; --accent-l:#fef3e0;
+  --success:#16a34a; --success-bg:#f0fdf4; --warn:#d97706; --warn-bg:#fffbeb;
+  --danger:#dc2626; --danger-bg:#fef2f2;
+  --bg:#f0f5fb; --surface:#fff; --surface2:#f8fafc;
+  --border:#e2eaf4; --text:#1e2a4a; --text2:#64748b; --muted:#94a3b8;
+  --grad:linear-gradient(160deg,#021c66 0%,#1b347e 45%,#3a62ab 80%,#1fa6df 100%);
+  --shadow:0 2px 8px rgba(27,52,126,.10); --shadow-md:0 4px 20px rgba(27,52,126,.13);
+  --shadow-lg:0 8px 32px rgba(27,52,126,.18);
+  --r:12px; --r-sm:8px; --sb:260px;
+  --font-ar:'Cairo',sans-serif; --font-en:'Inter',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-ar);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.65}
+body.en{font-family:var(--font-en)}
+
+/* ═══════════════ Layout ═══════════════ */
+#admin{display:flex;min-height:100vh}
+.sb{width:var(--sb);background:var(--grad);color:#fff;position:fixed;top:0;bottom:0;right:0;z-index:300;overflow-y:auto;display:flex;flex-direction:column;box-shadow:var(--shadow-lg)}
+body.en .sb{right:auto;left:0}
+.main{margin-right:var(--sb);flex:1;display:flex;flex-direction:column;min-width:0}
+body.en .main{margin-right:0;margin-left:var(--sb)}
+
+/* ═══════════════ Sidebar ═══════════════ */
+.sb-brand{padding:22px 18px 16px;border-bottom:1px solid rgba(255,255,255,.12)}
+.sb-logo{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.sb-icon{width:44px;height:44px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#fff;flex-shrink:0;font-family:var(--font-ar)}
+.sb-name{font-size:15px;font-weight:800;line-height:1.2;color:#fff}
+.sb-sub{font-size:10px;color:rgba(255,255,255,.5);margin-top:2px}
+.sb-tagline{font-size:11px;color:rgba(255,255,255,.4);margin-top:4px}
+.nav-sec{padding:12px 12px 4px}
+.nav-lbl{font-size:9px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.3);padding:0 8px;margin-bottom:4px;text-transform:uppercase}
+.nav-a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:500;color:rgba(255,255,255,.65);margin-bottom:2px;transition:all .15s;user-select:none;border:none;background:none;width:100%;text-align:right;font-family:inherit}
+body.en .nav-a{text-align:left}
+.nav-a:hover{background:rgba(255,255,255,.1);color:#fff}
+.nav-a.on{background:rgba(255,255,255,.18);color:#fff;font-weight:700}
+.nav-a .ni{font-size:17px;width:22px;text-align:center;flex-shrink:0}
+.nav-badge{margin-right:auto;background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;min-width:20px;text-align:center}
+body.en .nav-badge{margin-right:0;margin-left:auto}
+.sb-footer{margin-top:auto;padding:14px;border-top:1px solid rgba(255,255,255,.1)}
+.sb-user{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);border-radius:10px;padding:10px 12px}
+.sb-av{width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;flex-shrink:0}
+.sb-un{font-size:13px;font-weight:600;color:#fff}
+.sb-ur{font-size:10px;color:rgba(255,255,255,.45);margin-top:1px}
+
+/* ═══════════════ Topbar ═══════════════ */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:var(--shadow)}
+.tb-left{display:flex;align-items:center;gap:10px}
+.tb-title{font-size:18px;font-weight:800;color:var(--primary)}
+.tb-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.tb-right{display:flex;align-items:center;gap:8px}
+.lang-sw{display:flex;background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;overflow:hidden}
+.lang-btn{padding:5px 13px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--text2);font-family:inherit;transition:all .15s}
+.lang-btn.on{background:var(--primary);color:#fff}
+
+/* ═══════════════ Content ═══════════════ */
+.content{padding:24px;flex:1}
+.page{display:none;animation:fadeUp .2s ease}
+.page.on{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══════════════ Cards ═══════════════ */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
+.card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:8px}
+.card-t{font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:7px}
+
+/* ═══════════════ Grid ═══════════════ */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.mb{margin-bottom:16px}
+
+/* ═══════════════ KPI Metric ═══════════════ */
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;position:relative;overflow:hidden;box-shadow:var(--shadow);transition:transform .15s}
+.metric:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.metric::after{content:'';position:absolute;top:0;right:0;width:4px;height:100%;background:var(--mc,var(--primary));border-radius:0 var(--r) var(--r) 0}
+body.en .metric::after{right:auto;left:0;border-radius:var(--r) 0 0 var(--r)}
+.metric-ic{font-size:26px;margin-bottom:8px;display:block}
+.metric-lbl{font-size:11px;color:var(--muted);font-weight:500}
+.metric-val{font-size:30px;font-weight:900;line-height:1;color:var(--text);margin:4px 0}
+.metric-chg{font-size:11px;display:flex;align-items:center;gap:3px;margin-top:4px}
+.up{color:var(--success)}.dn{color:var(--danger)}.flat{color:var(--muted)}
+
+/* ═══════════════ Badges ═══════════════ */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:700;white-space:nowrap}
+.b-success{background:var(--success-bg);color:var(--success)}
+.b-warn{background:var(--warn-bg);color:var(--warn)}
+.b-danger{background:var(--danger-bg);color:var(--danger)}
+.b-info{background:#eff6ff;color:var(--mid)}
+.b-gray{background:var(--surface2);color:var(--text2)}
+.b-accent{background:var(--accent-l);color:var(--accent-d)}
+
+/* ═══════════════ Buttons ═══════════════ */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:10px;border:1.5px solid transparent;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;transition:all .15s;white-space:nowrap;text-decoration:none;user-select:none}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn-primary:hover{background:var(--dark);border-color:var(--dark)}
+.btn-accent{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-accent:hover{background:var(--accent-d)}
+.btn-outline{background:transparent;color:var(--primary);border-color:var(--primary)}
+.btn-outline:hover{background:#eff6ff}
+.btn-ghost{background:transparent;color:var(--text2);border-color:var(--border)}
+.btn-ghost:hover{background:var(--surface2)}
+.btn-danger{background:var(--danger);color:#fff;border-color:var(--danger)}
+.btn-success{background:var(--success);color:#fff;border-color:var(--success)}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-full{width:100%;justify-content:center}
+.btn-lg{padding:13px 28px;font-size:15px;border-radius:12px}
+
+/* ═══════════════ Tables ═══════════════ */
+.tbl-wrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{text-align:right;padding:10px 14px;background:var(--surface2);color:var(--muted);font-size:11px;font-weight:700;border-bottom:1px solid var(--border);white-space:nowrap}
+body.en thead th{text-align:left}
+tbody td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#f7f9fd}
+
+/* ═══════════════ Forms ═══════════════ */
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px}
+.fg .req{color:var(--danger)}
+.fi{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:9px 13px;font-family:inherit;font-size:13px;background:var(--surface2);color:var(--text);transition:border-color .15s;outline:none}
+.fi:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(27,52,126,.08)}
+textarea.fi{resize:vertical;min-height:80px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fhint{font-size:11px;color:var(--muted);margin-top:3px}
+
+/* ═══════════════ Alerts ═══════════════ */
+.alert{display:flex;gap:10px;padding:13px 16px;border-radius:10px;font-size:13px;border:1px solid transparent;margin-bottom:14px}
+.alert-ic{font-size:17px;flex-shrink:0;margin-top:1px}
+.al-info{background:#eff6ff;border-color:#bfdbfe;color:#1e40af}
+.al-warn{background:var(--warn-bg);border-color:#fde68a;color:#92400e}
+.al-success{background:var(--success-bg);border-color:#bbf7d0;color:#166534}
+.al-danger{background:var(--danger-bg);border-color:#fecaca;color:#991b1b}
+
+/* ═══════════════ Progress ═══════════════ */
+.prog{height:7px;background:var(--surface2);border-radius:100px;overflow:hidden}
+.prog-fill{height:100%;border-radius:100px;background:var(--primary);transition:width .5s}
+.prog-fill.accent{background:var(--accent)}
+.prog-fill.success{background:var(--success)}
+
+/* ═══════════════ Tabs ═══════════════ */
+.tabs{display:flex;gap:4px;background:var(--surface2);border-radius:11px;padding:5px;margin-bottom:18px}
+.tab-btn{flex:1;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);border:none;background:transparent;font-family:inherit;transition:all .15s;white-space:nowrap}
+.tab-btn.on{background:var(--surface);color:var(--primary);box-shadow:var(--shadow)}
+.tab-p{display:none}
+.tab-p.on{display:block}
+
+/* ═══════════════ Modal ═══════════════ */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:1000;padding:16px;backdrop-filter:blur(3px)}
+.ov.on{display:flex}
+.modal{background:var(--surface);border-radius:16px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;box-shadow:var(--shadow-lg);border:1px solid var(--border);animation:fadeUp .2s}
+.modal-hd{padding:20px 22px 0;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.modal-t{font-size:16px;font-weight:800;color:var(--primary)}
+.modal-body{padding:0 22px}
+.modal-ft{padding:16px 22px 20px;display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--border);margin-top:16px}
+.modal-x{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--surface2);border:none;font-size:16px;color:var(--muted);transition:all .15s}
+.modal-x:hover{background:var(--danger-bg);color:var(--danger)}
+
+/* ═══════════════ Toggle ═══════════════ */
+.toggle{position:relative;width:42px;height:24px;background:var(--border);border-radius:100px;cursor:pointer;transition:background .2s;flex-shrink:0}
+.toggle.on{background:var(--primary)}
+.toggle-k{position:absolute;top:3px;right:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on .toggle-k{transform:translateX(-18px)}
+
+/* ═══════════════ NPS ═══════════════ */
+.nps-big{text-align:center;padding:10px 0 16px}
+.nps-score{font-size:64px;font-weight:900;line-height:1}
+.nps-lbl{font-size:12px;color:var(--muted);margin-top:4px}
+.nps-breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.nps-seg{padding:12px 8px;border-radius:12px;text-align:center;font-size:12px}
+.nps-seg .sv{font-size:22px;font-weight:900;display:block;margin-bottom:2px}
+.ns-pro{background:var(--success-bg);color:var(--success)}
+.ns-pas{background:#fefce8;color:#854d0e}
+.ns-det{background:var(--danger-bg);color:var(--danger)}
+.seg-bar{display:flex;height:9px;border-radius:100px;overflow:hidden;gap:2px;margin-top:10px}
+.seg-p{height:100%;border-radius:100px}
+
+/* ═══════════════ Bar Chart ═══════════════ */
+.bars{display:flex;flex-direction:column;gap:12px}
+.bar-row{display:flex;align-items:center;gap:10px}
+.bar-lbl{font-size:12px;color:var(--text2);width:130px;flex-shrink:0;text-align:right}
+body.en .bar-lbl{text-align:left}
+.bar-track{flex:1;height:10px;background:var(--surface2);border-radius:100px;overflow:hidden;border:1px solid var(--border)}
+.bar-fill{height:100%;border-radius:100px;background:var(--primary);transition:width .6s}
+.bar-val{font-size:12px;font-weight:700;width:40px;color:var(--primary)}
+
+/* ═══════════════ Survey Builder ═══════════════ */
+.qcard{border:1.5px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;background:var(--surface2);position:relative;transition:border-color .15s}
+.qcard:hover{border-color:var(--primary)}
+.q-tag{display:inline-block;font-size:10px;font-weight:800;padding:2px 9px;border-radius:4px;margin-bottom:8px;background:#eff6ff;color:var(--mid);letter-spacing:.5px;text-transform:uppercase}
+.q-acts{position:absolute;top:10px;left:10px;display:flex;gap:4px}
+body.en .q-acts{left:auto;right:10px}
+.q-ab{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--surface);border:1px solid var(--border);font-size:12px;color:var(--muted);transition:all .15s}
+.q-ab:hover{background:var(--danger-bg);color:var(--danger);border-color:var(--danger)}
+
+/* ═══════════════ Survey Inputs ═══════════════ */
+.stars-row{display:flex;gap:6px}
+.star{font-size:30px;cursor:pointer;color:#e2e8f0;transition:color .1s;border:none;background:none;line-height:1}
+.star.lit{color:var(--accent)}
+.nps-row{display:flex;gap:3px;flex-wrap:wrap}
+.nps-num{flex:1;min-width:28px;padding:9px 0;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;font-size:13px;font-weight:700;text-align:center;transition:all .15s;font-family:inherit}
+.nps-num:hover{border-color:var(--primary);color:var(--primary)}
+.nps-num.ndet{background:var(--danger-bg);border-color:var(--danger);color:var(--danger)}
+.nps-num.npas{background:var(--warn-bg);border-color:var(--warn);color:var(--warn)}
+.nps-num.npro{background:var(--success-bg);border-color:var(--success);color:var(--success)}
+.ces-row{display:flex;gap:5px}
+.ces-n{flex:1;padding:11px 0;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;font-size:13px;font-weight:700;text-align:center;transition:all .15s;font-family:inherit}
+.ces-n:hover,.ces-n.sel{background:var(--primary);border-color:var(--primary);color:#fff}
+.choices-list{display:flex;flex-direction:column;gap:7px}
+.choice-it{display:flex;align-items:center;gap:9px;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface);cursor:pointer;transition:all .15s;font-size:13px}
+.choice-it:hover{border-color:var(--primary)}
+.choice-it.sel{border-color:var(--primary);background:#eff6ff;color:var(--primary);font-weight:600}
+.choice-dot{width:17px;height:17px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;transition:all .15s}
+.choice-it.sel .choice-dot{border-color:var(--primary);background:var(--primary)}
+.yn-row{display:flex;gap:10px}
+.yn-btn{flex:1;padding:12px 0;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;font-weight:700;font-size:15px;text-align:center;transition:all .15s;font-family:inherit}
+.yn-yes.sel{background:var(--success-bg);border-color:var(--success);color:var(--success)}
+.yn-no.sel{background:var(--danger-bg);border-color:var(--danger);color:var(--danger)}
+
+/* ═══════════════ Response Cards ═══════════════ */
+.resp-card{border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;background:var(--surface);box-shadow:var(--shadow)}
+.resp-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:10px}
+.resp-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff;flex-shrink:0}
+.resp-info{flex:1;margin-right:10px}
+body.en .resp-info{margin-right:0;margin-left:10px}
+.resp-name{font-weight:700;font-size:14px}
+.resp-meta{font-size:11px;color:var(--muted);margin-top:1px}
+.score-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.score-pill{display:flex;flex-direction:column;align-items:center;background:var(--surface2);border-radius:10px;padding:7px 14px;min-width:62px;border:1px solid var(--border)}
+.score-pill .pv{font-size:20px;font-weight:900}
+.score-pill .pl{font-size:10px;color:var(--muted)}
+.resp-comment{background:var(--surface2);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--text2);margin-top:10px;border-right:4px solid var(--primary)}
+body.en .resp-comment{border-right:none;border-left:4px solid var(--primary)}
+
+/* ═══════════════ Code block ═══════════════ */
+.code-wrap{background:#1e1e2e;border-radius:12px;overflow:hidden;margin:10px 0;font-size:12px}
+.code-hd{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:#313244}
+.code-lang{font-size:11px;font-weight:700;color:#89b4fa;font-family:monospace}
+pre{padding:14px;overflow-x:auto;font-family:'Courier New',monospace;font-size:12px;line-height:1.7;color:#cdd6f4;white-space:pre}
+
+/* ═══════════════ Share box ═══════════════ */
+.share-box{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:9px 13px}
+.share-url{flex:1;font-size:12px;color:var(--text2);word-break:break-all;font-family:monospace}
+.copy-btn{padding:6px 12px;border-radius:8px;background:var(--primary);color:#fff;border:none;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .15s;white-space:nowrap}
+.copy-btn:hover{opacity:.85}
+
+/* ═══════════════ Settings row ═══════════════ */
+.set-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)}
+.set-row:last-child{border-bottom:none}
+.set-lbl{font-weight:600;font-size:13px}
+.set-desc{font-size:11px;color:var(--muted);margin-top:2px}
+.swatch{width:34px;height:34px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .15s;display:inline-block}
+.swatch.on{border-color:var(--text);transform:scale(1.1)}
+
+/* ═══════════════ Survey Page ═══════════════ */
+#survey-page{display:none;min-height:100vh;background:linear-gradient(135deg,#eef4fb 0%,#ddeaf8 100%)}
+#survey-page.on{display:block}
+.sv-wrap{max-width:680px;margin:0 auto;padding:28px 16px}
+.sv-hd{background:var(--surface);border-radius:16px;padding:28px;margin-bottom:20px;text-align:center;box-shadow:var(--shadow-md)}
+.sv-logo{width:60px;height:60px;border-radius:16px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#fff;margin:0 auto 12px;font-family:var(--font-ar)}
+.sv-co{font-size:20px;font-weight:900;color:var(--primary)}
+.sv-sub{font-size:13px;color:var(--muted);margin-top:4px}
+.sv-prog{height:6px;background:var(--border);border-radius:100px;margin-top:16px}
+.sv-pf{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:100px;transition:width .4s}
+.sv-qcard{background:var(--surface);border-radius:16px;padding:26px;margin-bottom:16px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.sv-step{font-size:11px;font-weight:800;color:var(--accent);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.sv-qt{font-size:16px;font-weight:700;color:var(--text);margin-bottom:18px;line-height:1.5}
+.sv-thanks{background:var(--surface);border-radius:16px;padding:48px 28px;text-align:center;box-shadow:var(--shadow-md);display:none}
+.sv-thanks.on{display:block}
+.sv-tick{font-size:60px;display:block;margin-bottom:16px}
+.sv-lang-bar{display:flex;justify-content:flex-end;margin-bottom:14px}
+
+/* ═══════════════ Empty State ═══════════════ */
+.empty{text-align:center;padding:44px 20px;color:var(--muted)}
+.empty-ic{font-size:48px;margin-bottom:10px;display:block}
+.empty-t{font-size:15px;font-weight:700;color:var(--text2);margin-bottom:5px}
+.empty-d{font-size:13px}
+
+hr.div{border:none;border-top:1px solid var(--border);margin:16px 0}
+.section-t{font-size:15px;font-weight:800;color:var(--primary);margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:8px}
+
+/* ═══════════════ Responsive ═══════════════ */
+@media(max-width:768px){
+  .sb{display:none}
+  .main{margin-right:0!important;margin-left:0!important}
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .content{padding:14px}
+  .topbar{padding:0 14px}
+}
+</style>
+</head>
+<body>
+
+<!-- ╔═══════════════════════════════════════════╗
+     ║              ADMIN DASHBOARD              ║
+     ╚═══════════════════════════════════════════╝ -->
+<div id="admin">
+
+  <!-- SIDEBAR -->
+  <aside class="sb">
+    <div class="sb-brand">
+      <div class="sb-logo">
+        <div class="sb-icon">م</div>
+        <div>
+          <div class="sb-name" id="sb-name-ar">مواردكم لحلول الأعمال</div>
+          <div class="sb-name" id="sb-name-en" style="display:none;font-size:12px">Mawaridcom for Business Solutions</div>
+        </div>
+      </div>
+      <div class="sb-tagline" id="sb-tg">نظام إدارة تجربة العميل</div>
+    </div>
+
+    <div class="nav-sec">
+      <div class="nav-lbl" id="nl-main">الرئيسية</div>
+      <button class="nav-a on" onclick="goto('dashboard')"><span class="ni">📊</span><span id="n-dash">لوحة التحكم</span></button>
+    </div>
+    <div class="nav-sec">
+      <div class="nav-lbl" id="nl-cx">إدارة العملاء</div>
+      <button class="nav-a" onclick="goto('contacts')"><span class="ni">👥</span><span id="n-contacts">جهات الاتصال</span></button>
+      <button class="nav-a" onclick="goto('surveys')"><span class="ni">📋</span><span id="n-surveys">الاستبيانات</span></button>
+      <button class="nav-a" onclick="goto('send')"><span class="ni">📤</span><span id="n-send">إرسال وجدولة</span></button>
+    </div>
+    <div class="nav-sec">
+      <div class="nav-lbl" id="nl-res">النتائج</div>
+      <button class="nav-a" onclick="goto('responses')"><span class="ni">📥</span><span id="n-resp">الردود الواردة</span><span class="nav-badge" id="resp-count">3</span></button>
+      <button class="nav-a" onclick="goto('analytics')"><span class="ni">📈</span><span id="n-analytics">التحليل والمقاييس</span></button>
+    </div>
+    <div class="nav-sec">
+      <div class="nav-lbl" id="nl-sys">النظام</div>
+      <button class="nav-a" onclick="goto('integrations')"><span class="ni">🔗</span><span id="n-int">التكاملات</span></button>
+      <button class="nav-a" onclick="goto('settings')"><span class="ni">⚙️</span><span id="n-set">الإعدادات</span></button>
+    </div>
+
+    <div class="sb-footer">
+      <div class="sb-user">
+        <div class="sb-av">م</div>
+        <div>
+          <div class="sb-un" id="sb-uname">مدير النظام</div>
+          <div class="sb-ur">basemaleisawi@gmail.com</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div class="tb-left">
+        <div>
+          <div class="tb-title" id="pg-title">لوحة التحكم</div>
+          <div class="tb-sub" id="pg-sub">نظرة عامة على مقاييس تجربة العميل</div>
+        </div>
+      </div>
+      <div class="tb-right">
+        <div class="lang-sw">
+          <button class="lang-btn on" id="btn-ar" onclick="setLang('ar')">AR</button>
+          <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="goto('send')" id="tb-send">📤 إرسال سريع</button>
+        <button class="btn btn-primary btn-sm" onclick="goto('surveys')" id="tb-new">+ استبيان</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ══ DASHBOARD ══ -->
+      <div class="page on" id="page-dashboard">
+        <div class="alert al-warn mb" id="dash-alert">
+          <span class="alert-ic">⚠️</span>
+          <div id="dash-alert-msg">لديك <strong>3 ردود جديدة</strong> — منهم منتقدون يحتاجون متابعة. <a href="#" onclick="goto('responses');return false" style="color:var(--primary);font-weight:700">عرض الردود ←</a></div>
+        </div>
+        <div class="g4 mb">
+          <div class="metric" style="--mc:var(--primary)">
+            <span class="metric-ic">📩</span>
+            <div class="metric-lbl" id="m1l">الاستبيانات المرسلة</div>
+            <div class="metric-val">1,284</div>
+            <div class="metric-chg up">↑ +12% <span id="m1d">هذا الشهر</span></div>
+          </div>
+          <div class="metric" style="--mc:var(--success)">
+            <span class="metric-ic">✅</span>
+            <div class="metric-lbl" id="m2l">معدل الاستجابة</div>
+            <div class="metric-val">68%</div>
+            <div class="metric-chg up">↑ +5%</div>
+          </div>
+          <div class="metric" style="--mc:var(--accent)">
+            <span class="metric-ic">⭐</span>
+            <div class="metric-lbl" id="m3l">CSAT الكلي</div>
+            <div class="metric-val">82%</div>
+            <div class="metric-chg dn">↓ -3%</div>
+          </div>
+          <div class="metric" style="--mc:#7c3aed">
+            <span class="metric-ic">🎯</span>
+            <div class="metric-lbl" id="m4l">NPS الكلي</div>
+            <div class="metric-val" style="color:var(--success)">+42</div>
+            <div class="metric-chg up">↑ <span id="m4d">أعلى من المتوسط</span></div>
+          </div>
+        </div>
+        <div class="g2 mb">
+          <div class="card">
+            <div class="card-hd"><div class="card-t">🎯 NPS</div><span class="badge b-success" id="nps-badge">ممتاز</span></div>
+            <div class="nps-big">
+              <div class="nps-score" style="color:var(--success)">+42</div>
+              <div class="nps-lbl" id="nps-bench">المتوسط العالمي: +34</div>
+            </div>
+            <div class="nps-breakdown">
+              <div class="nps-seg ns-pro"><span class="sv">58%</span><span id="nps-pro">مروّجون (9-10)</span></div>
+              <div class="nps-seg ns-pas"><span class="sv">26%</span><span id="nps-pas">محايدون (7-8)</span></div>
+              <div class="nps-seg ns-det"><span class="sv">16%</span><span id="nps-det">منتقدون (0-6)</span></div>
+            </div>
+            <div class="seg-bar" style="margin-top:12px">
+              <div class="seg-p" style="width:58%;background:var(--success)"></div>
+              <div class="seg-p" style="width:26%;background:#eab308"></div>
+              <div class="seg-p" style="width:16%;background:var(--danger)"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-hd"><div class="card-t" id="csat-seg-t">📊 CSAT حسب الشريحة</div></div>
+            <div class="bars">
+              <div class="bar-row"><div class="bar-lbl" id="bs1">الشركات العميلة</div><div class="bar-track"><div class="bar-fill" style="width:88%;background:var(--primary)"></div></div><div class="bar-val" style="color:var(--primary)">88%</div></div>
+              <div class="bar-row"><div class="bar-lbl" id="bs2">المرشحون الأفراد</div><div class="bar-track"><div class="bar-fill" style="width:79%;background:var(--mid)"></div></div><div class="bar-val" style="color:var(--mid)">79%</div></div>
+              <div class="bar-row"><div class="bar-lbl" id="bs3">الموظفون الخارجيون</div><div class="bar-track"><div class="bar-fill" style="width:71%;background:var(--warn)"></div></div><div class="bar-val" style="color:var(--warn)">71%</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><div class="card-t" id="d-latest">📋 آخر الردود</div><button class="btn btn-ghost btn-sm" onclick="goto('responses')" id="d-viewall">عرض الكل ←</button></div>
+          <div class="tbl-wrap"><table><thead><tr><th id="th-name">المستجيب</th><th id="th-seg">الشريحة</th><th>NPS</th><th>CSAT</th><th>CES</th><th id="th-status">الحالة</th><th id="th-date">التاريخ</th></tr></thead><tbody id="dash-tbody"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ══ CONTACTS ══ -->
+      <div class="page" id="page-contacts">
+        <div class="tabs" id="contacts-tabs">
+          <button class="tab-btn on" onclick="switchContactTab('companies',this)" id="ct-co">🏢 الشركات</button>
+          <button class="tab-btn" onclick="switchContactTab('candidates',this)" id="ct-ca">👤 المرشحون</button>
+          <button class="tab-btn" onclick="switchContactTab('outsource',this)" id="ct-ou">🧑‍💼 الموظفون الخارجيون</button>
+        </div>
+        <div id="contacts-content"></div>
+      </div>
+
+      <!-- ══ SURVEYS ══ -->
+      <div class="page" id="page-surveys">
+        <div class="alert al-info mb" id="sv-edit-hint">
+          <span class="alert-ic">💡</span>
+          <span id="sv-hint-msg">اضغط "تعديل" لأي استبيان لتعديل أسئلته وإضافة أسئلة جديدة أو حذف موجودة.</span>
+        </div>
+        <div id="surveys-list"></div>
+      </div>
+
+      <!-- ══ SEND ══ -->
+      <div class="page" id="page-send">
+        <div class="card">
+          <div class="card-hd"><div class="card-t">📤 <span id="send-t">إرسال الاستبيانات</span></div></div>
+          <div class="frow mb">
+            <div class="fg">
+              <label id="lbl-pick-sv">اختر الاستبيان</label>
+              <select class="fi" id="send-sv-sel" onchange="updateSendPreview()">
+                <option value="companies" id="so-co">استبيان رضا الشركات العميلة</option>
+                <option value="candidates" id="so-ca">تجربة المرشحين والأفراد</option>
+                <option value="outsource" id="so-ou">تقييم الموظف الخارجي</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label id="lbl-pick-seg">الشريحة المستهدفة</label>
+              <select class="fi" id="send-seg-sel" onchange="updateSendPreview()">
+                <option value="companies" id="sso-co">الشركات العميلة</option>
+                <option value="candidates" id="sso-ca">المرشحون الأفراد</option>
+                <option value="outsource" id="sso-ou">الموظفون الخارجيون</option>
+              </select>
+            </div>
+          </div>
+          <div id="send-contacts-info" style="margin-bottom:14px"></div>
+          <div class="fg">
+            <label id="lbl-sv-link">رابط الاستبيان المباشر</label>
+            <div class="share-box">
+              <span class="share-url" id="sv-direct-url">mawaridcom_cx_system.html?survey=companies</span>
+              <button class="copy-btn" onclick="copyDirectLink()" id="btn-copy-link">نسخ</button>
+            </div>
+            <div class="fhint" id="sv-link-hint">شارك هذا الرابط مباشرة عبر بريد إلكتروني أو واتساب أو SMS</div>
+          </div>
+          <hr class="div">
+          <div id="send-msgs-section" style="display:none">
+            <div class="card-hd"><div class="card-t" id="msgs-t">💬 الرسائل الشخصية</div><button class="btn btn-success btn-sm" onclick="copyAllMessages()" id="btn-copy-all">📋 نسخ الكل</button></div>
+            <div id="msgs-list" style="max-height:340px;overflow-y:auto"></div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:14px">
+            <button class="btn btn-primary" onclick="generateSendMessages()" id="btn-gen-msgs">✨ <span id="gen-msgs-lbl">توليد الرسائل</span></button>
+            <button class="btn btn-ghost" onclick="goto('contacts')" id="btn-add-contacts">👥 <span id="add-contacts-lbl">إدارة جهات الاتصال</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ RESPONSES ══ -->
+      <div class="page" id="page-responses">
+        <div class="card mb" style="padding:12px 18px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <span style="font-size:12px;color:var(--muted)" id="f-lbl">تصفية:</span>
+            <select class="fi" style="width:auto;padding:5px 10px;font-size:12px" onchange="filterResponses(this.value,'seg')" id="f-seg">
+              <option value="" id="f-all">كل الشرائح</option>
+              <option value="companies" id="f-co">الشركات</option>
+              <option value="candidates" id="f-ca">المرشحون</option>
+              <option value="outsource" id="f-ou">الموظفون الخارجيون</option>
+            </select>
+            <select class="fi" style="width:auto;padding:5px 10px;font-size:12px" onchange="filterResponses(this.value,'status')" id="f-st">
+              <option value="" id="f-all-s">كل الحالات</option>
+              <option value="followup" id="f-followup">يحتاج متابعة</option>
+              <option value="done" id="f-done">مكتمل</option>
+            </select>
+            <button class="btn btn-ghost btn-sm" style="margin-right:auto" onclick="exportResponsesCSV()" id="btn-export">📊 تصدير CSV</button>
+            <button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="clearAllResponses()" id="btn-clear-resp">🗑 مسح الكل</button>
+          </div>
+        </div>
+        <div id="responses-list"></div>
+      </div>
+
+      <!-- ══ ANALYTICS ══ -->
+      <div class="page" id="page-analytics">
+        <div class="tabs" id="analytics-tabs">
+          <button class="tab-btn on" onclick="switchTab(this,'tab-ov')" id="at-ov">نظرة عامة</button>
+          <button class="tab-btn" onclick="switchTab(this,'tab-nps')" id="at-nps">NPS</button>
+          <button class="tab-btn" onclick="switchTab(this,'tab-csat')" id="at-csat">CSAT</button>
+          <button class="tab-btn" onclick="switchTab(this,'tab-ces')" id="at-ces">CES</button>
+        </div>
+        <div class="tab-p on" id="tab-ov">
+          <div class="g3 mb">
+            <div class="card" style="text-align:center;padding:28px"><div style="font-size:52px;font-weight:900;color:var(--success)">+42</div><div style="font-weight:700;font-size:15px">NPS <span id="a-overall">الكلي</span></div></div>
+            <div class="card" style="text-align:center;padding:28px"><div style="font-size:52px;font-weight:900;color:var(--primary)">82%</div><div style="font-weight:700;font-size:15px">CSAT <span id="a-overall2">الكلي</span></div></div>
+            <div class="card" style="text-align:center;padding:28px"><div style="font-size:52px;font-weight:900;color:var(--accent)">5.4</div><div style="font-weight:700;font-size:15px">CES <span id="a-overall3">الكلي</span></div></div>
+          </div>
+          <div class="card"><div class="card-t mb" id="seg-cmp-t">📊 مقارنة الشرائح</div>
+          <div class="tbl-wrap"><table><thead><tr><th id="ah-seg">الشريحة</th><th>CSAT</th><th>NPS</th><th>CES</th><th id="ah-resp">الردود</th><th id="ah-status">الحالة</th></tr></thead><tbody>
+            <tr><td><strong id="ac-co">الشركات العميلة</strong></td><td style="color:var(--success);font-weight:700">88%</td><td style="color:var(--success);font-weight:700">+55</td><td>6.2/7</td><td>142</td><td><span class="badge b-success" id="ac-ex">ممتاز</span></td></tr>
+            <tr><td><strong id="ac-ca">المرشحون الأفراد</strong></td><td style="color:var(--mid);font-weight:700">79%</td><td style="color:var(--mid);font-weight:700">+38</td><td>5.1/7</td><td>389</td><td><span class="badge b-info" id="ac-gd">جيد</span></td></tr>
+            <tr><td><strong id="ac-ou">الموظفون الخارجيون</strong></td><td style="color:var(--warn);font-weight:700">71%</td><td style="color:var(--warn);font-weight:700">+22</td><td>4.2/7</td><td>201</td><td><span class="badge b-warn" id="ac-ni">يحتاج تحسين</span></td></tr>
+          </tbody></table></div></div>
+        </div>
+        <div class="tab-p" id="tab-nps">
+          <div class="card"><div class="card-t mb" id="nps-det-t">🎯 تحليل NPS التفصيلي</div>
+          <div class="nps-big"><div class="nps-score" style="color:var(--success)">+42</div><div class="nps-lbl">58% − 16% = +42</div></div>
+          <div class="nps-breakdown" style="margin-top:18px">
+            <div class="nps-seg ns-pro"><span class="sv">58%</span><span id="anps-pro">مروّجون</span><br><small>745 مستجيب</small></div>
+            <div class="nps-seg ns-pas"><span class="sv">26%</span><span id="anps-pas">محايدون</span><br><small>334 مستجيب</small></div>
+            <div class="nps-seg ns-det"><span class="sv">16%</span><span id="anps-det">منتقدون</span><br><small>205 مستجيب</small></div>
+          </div>
+          <div class="bars" style="margin-top:18px">
+            <div class="bar-row"><div class="bar-lbl" id="anps-co">الشركات</div><div class="bar-track"><div class="bar-fill" style="width:79%;background:var(--success)"></div></div><div class="bar-val" style="color:var(--success)">+55</div></div>
+            <div class="bar-row"><div class="bar-lbl" id="anps-ca">المرشحون</div><div class="bar-track"><div class="bar-fill" style="width:69%;background:var(--mid)"></div></div><div class="bar-val" style="color:var(--mid)">+38</div></div>
+            <div class="bar-row"><div class="bar-lbl" id="anps-ou">الخارجيون</div><div class="bar-track"><div class="bar-fill" style="width:53%;background:var(--warn)"></div></div><div class="bar-val" style="color:var(--warn)">+22</div></div>
+          </div></div>
+        </div>
+        <div class="tab-p" id="tab-csat">
+          <div class="card"><div class="card-t mb" id="csat-dist-t">⭐ توزيع CSAT</div>
+          <div class="bars">
+            <div class="bar-row"><div class="bar-lbl">⭐⭐⭐⭐⭐</div><div class="bar-track"><div class="bar-fill" style="width:45%;background:var(--success)"></div></div><div class="bar-val">45%</div></div>
+            <div class="bar-row"><div class="bar-lbl">⭐⭐⭐⭐</div><div class="bar-track"><div class="bar-fill" style="width:37%;background:#4ade80"></div></div><div class="bar-val">37%</div></div>
+            <div class="bar-row"><div class="bar-lbl">⭐⭐⭐</div><div class="bar-track"><div class="bar-fill" style="width:10%;background:#eab308"></div></div><div class="bar-val">10%</div></div>
+            <div class="bar-row"><div class="bar-lbl">⭐⭐</div><div class="bar-track"><div class="bar-fill" style="width:5%;background:#f97316"></div></div><div class="bar-val">5%</div></div>
+            <div class="bar-row"><div class="bar-lbl">⭐</div><div class="bar-track"><div class="bar-fill" style="width:3%;background:var(--danger)"></div></div><div class="bar-val">3%</div></div>
+          </div>
+          <div style="margin-top:18px;background:var(--success-bg);padding:16px;border-radius:12px;text-align:center">
+            <div style="font-size:36px;font-weight:900;color:var(--success)">82%</div>
+            <div style="font-size:12px;color:var(--muted)" id="csat-rate-lbl">نسبة الرضا (4-5 نجوم)</div>
+          </div></div>
+        </div>
+        <div class="tab-p" id="tab-ces">
+          <div class="card"><div class="card-t mb" id="ces-t">⚡ تحليل CES</div>
+          <div style="text-align:center;padding:20px 0"><div style="font-size:52px;font-weight:900;color:var(--accent)">5.4</div><div style="font-size:12px;color:var(--muted)" id="ces-out">متوسط كلي / من 7</div></div>
+          <div class="bars">
+            <div class="bar-row"><div class="bar-lbl" id="ces-co">الشركات</div><div class="bar-track"><div class="bar-fill" style="width:89%;background:var(--success)"></div></div><div class="bar-val" style="color:var(--success)">6.2</div></div>
+            <div class="bar-row"><div class="bar-lbl" id="ces-ca">المرشحون</div><div class="bar-track"><div class="bar-fill" style="width:73%;background:var(--primary)"></div></div><div class="bar-val" style="color:var(--primary)">5.1</div></div>
+            <div class="bar-row"><div class="bar-lbl" id="ces-ou">الخارجيون</div><div class="bar-track"><div class="bar-fill" style="width:60%;background:var(--warn)"></div></div><div class="bar-val" style="color:var(--warn)">4.2</div></div>
+          </div>
+          <div class="alert al-warn" style="margin-top:14px">
+            <span class="alert-ic">⚠️</span><span id="ces-warn">CES الموظفين الخارجيين منخفض — يُنصح بمراجعة إجراءات التأهيل.</span>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- ══ INTEGRATIONS ══ -->
+      <div class="page" id="page-integrations">
+        <div class="g2">
+          <div>
+            <div class="card mb">
+              <div class="section-t">📊 <span id="int-gs-t">Google Sheets & Apps Script</span></div>
+              <div class="fg"><label id="int-url-lbl">Apps Script Web App URL</label>
+                <input class="fi" id="script-url" placeholder="https://script.google.com/macros/s/…/exec">
+                <div class="fhint" id="int-url-hint">انسخ الرابط بعد نشر الـ Script كـ Web App</div>
+              </div>
+              <div style="display:flex;gap:8px;margin-bottom:12px">
+                <button class="btn btn-primary btn-sm" onclick="saveScriptUrl()" id="btn-sv-url">💾 <span id="int-save-lbl">حفظ وربط</span></button>
+                <button class="btn btn-ghost btn-sm" onclick="testConnection()" id="btn-test">🔗 <span id="int-test-lbl">اختبار الاتصال</span></button>
+              </div>
+              <div id="conn-result"></div>
+              <hr class="div">
+              <div style="font-weight:700;font-size:13px;margin-bottom:10px" id="int-steps-t">خطوات الإعداد:</div>
+              <ol style="font-size:12px;color:var(--text2);line-height:2.2;padding-right:18px" id="int-steps-list">
+                <li>اذهب إلى <a href="https://sheets.google.com" target="_blank" style="color:var(--primary)">sheets.google.com</a> وأنشئ جدول بيانات جديداً</li>
+                <li>من شريط القائمة: <strong>Extensions → Apps Script</strong></li>
+                <li>احذف الكود الموجود والصق الكود المجاور كاملاً</li>
+                <li>غيّر <code style="background:#f0f4f8;padding:1px 5px;border-radius:4px">PASTE_YOUR_SHEET_ID_HERE</code> بـ ID جدولك من الرابط</li>
+                <li><strong>Deploy → New Deployment → Web App → Execute as: Me → Who has access: Anyone → Deploy</strong></li>
+                <li>انسخ الـ URL وضعه في الحقل أعلاه</li>
+              </ol>
+            </div>
+            <div class="card mb">
+              <div class="section-t">🔗 <span id="int-links-t">روابط الاستبيانات المباشرة</span></div>
+              <div style="display:flex;flex-direction:column;gap:10px" id="int-links-list">
+                <div><div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px" id="il-co">🏢 الشركات العميلة</div><div class="share-box"><span class="share-url" id="il-co-url">mawaridcom_cx_system.html?survey=companies</span><button class="copy-btn" onclick="copyText('il-co-url')" id="il-co-btn">نسخ</button></div></div>
+                <div><div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px" id="il-ca">👤 المرشحون الأفراد</div><div class="share-box"><span class="share-url" id="il-ca-url">mawaridcom_cx_system.html?survey=candidates</span><button class="copy-btn" onclick="copyText('il-ca-url')" id="il-ca-btn">نسخ</button></div></div>
+                <div><div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px" id="il-ou">🧑‍💼 الموظفون الخارجيون</div><div class="share-box"><span class="share-url" id="il-ou-url">mawaridcom_cx_system.html?survey=outsource</span><button class="copy-btn" onclick="copyText('il-ou-url')" id="il-ou-btn">نسخ</button></div></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="card">
+              <div class="card-hd"><div class="card-t">⚙️ Code.gs</div><button class="copy-btn" onclick="copyCode('apps-script-code')" id="int-copy-code">📋 نسخ الكود</button></div>
+              <div class="code-wrap"><div class="code-hd"><span class="code-lang">JavaScript — Code.gs</span></div>
+<pre id="apps-script-code">var CONFIG = {
+  SHEET_ID: 'PASTE_YOUR_SHEET_ID_HERE',
+  MANAGER_EMAIL: 'basemaleisawi@gmail.com',
+  NPS_THRESHOLD: 7,
+  SHEETS: {
+    companies:  'شركات',
+    candidates: 'مرشحون',
+    outsource:  'موظفون خارجيون'
+  }
+};
+
+var HEADERS = {
+  companies:  ['التاريخ','الاسم','البريد','الجوال','الشركة','CSAT','NPS','CES','التعليق','اللغة'],
+  candidates: ['التاريخ','الاسم','البريد','الجوال','CSAT','NPS','CES','اختيارات','التعليق','اللغة'],
+  outsource:  ['التاريخ','الاسم','البريد','الجوال','الشركة المضيفة','CSAT','NPS','CES','مشاكل راتب','التعليق','اللغة']
+};
+
+function getSheet(ss, type) {
+  var name = CONFIG.SHEETS[type] || 'عام';
+  var sheet = ss.getSheetByName(name);
+  if (!sheet) {
+    sheet = ss.insertSheet(name);
+    var hdrs = HEADERS[type] || ['التاريخ','البيانات'];
+    sheet.appendRow(hdrs);
+    sheet.getRange(1,1,1,hdrs.length)
+      .setBackground('#1b347e')
+      .setFontColor('#ffffff')
+      .setFontWeight('bold');
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+function doPost(e) {
+  try {
+    var d = JSON.parse(e.postData.contents);
+    var ss = SpreadsheetApp.openById(CONFIG.SHEET_ID);
+    var sheet = getSheet(ss, d.type);
+    var now = new Date().toLocaleString('ar-SA',{timeZone:'Asia/Riyadh'});
+    var row;
+    if (d.type === 'companies') {
+      row = [now,d.name||'',d.email||'',d.phone||'',d.company||'',d.csat||'',d.nps||'',d.ces||'',d.comment||'',d.lang||'ar'];
+    } else if (d.type === 'candidates') {
+      row = [now,d.name||'',d.email||'',d.phone||'',d.csat||'',d.nps||'',d.ces||'',(d.choices||[]).join(', '),d.comment||'',d.lang||'ar'];
+    } else {
+      row = [now,d.name||'',d.email||'',d.phone||'',d.company||'',d.csat||'',d.nps||'',d.ces||'',d.salaryIssue||'',d.comment||'',d.lang||'ar'];
+    }
+    sheet.appendRow(row);
+    if (d.nps !== undefined && parseInt(d.nps) < CONFIG.NPS_THRESHOLD) {
+      var sub = '🚨 تنبيه مواردكم: NPS منخفض - ' + (d.name||'عميل');
+      var body = 'الاسم: '+(d.name||'-')+'\nNPS: '+d.nps+'/10\nCSAT: '+(d.csat||'-')+'/5\nتعليق: '+(d.comment||'-');
+      GmailApp.sendEmail(CONFIG.MANAGER_EMAIL, sub, body);
+    }
+    return ContentService
+      .createTextOutput(JSON.stringify({success:true}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({success:false,error:err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet() {
+  return ContentService
+    .createTextOutput(JSON.stringify({status:'ok',system:'MawaridcomCX v3'}))
+    .setMimeType(ContentService.MimeType.JSON);
+}</pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ SETTINGS ══ -->
+      <div class="page" id="page-settings">
+        <div class="g2">
+          <div class="card">
+            <div class="section-t">🎨 <span id="set-ui-t">تخصيص الهوية</span></div>
+            <div class="fg"><label id="set-name-lbl">اسم الشركة</label><input class="fi" id="set-name" value="مواردكم" oninput="applyBrandName()"></div>
+            <div class="fg">
+              <label id="set-color-lbl">اللون الرئيسي</label>
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:5px">
+                <div class="swatch on" style="background:#1b347e" onclick="setPrimaryColor('#1b347e',this)"></div>
+                <div class="swatch" style="background:#0f766e" onclick="setPrimaryColor('#0f766e',this)"></div>
+                <div class="swatch" style="background:#7c3aed" onclick="setPrimaryColor('#7c3aed',this)"></div>
+                <div class="swatch" style="background:#c0392b" onclick="setPrimaryColor('#c0392b',this)"></div>
+                <div class="swatch" style="background:#1a7a4a" onclick="setPrimaryColor('#1a7a4a',this)"></div>
+                <div class="swatch" style="background:#e8a020" onclick="setPrimaryColor('#e8a020',this)"></div>
+                <input type="color" value="#1b347e" oninput="setPrimaryColor(this.value)" style="width:34px;height:34px;border:none;border-radius:50%;cursor:pointer;padding:2px">
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="saveSettings()" id="btn-save-set">💾 <span id="set-save-lbl">حفظ الإعدادات</span></button>
+          </div>
+          <div class="card">
+            <div class="section-t">⚙️ <span id="set-sys-t">إعدادات النظام</span></div>
+            <div class="set-row">
+              <div><div class="set-lbl" id="set-notif-lbl">تنبيه المنتقدين فوراً</div><div class="set-desc" id="set-notif-d">إرسال بريد عند NPS أقل من الحد</div></div>
+              <div class="toggle on" id="toggle-notif" onclick="toggleSetting('notifyDetractors',this)"><div class="toggle-k"></div></div>
+            </div>
+            <div class="set-row">
+              <div><div class="set-lbl" id="set-auto-lbl">الإرسال التلقائي</div><div class="set-desc" id="set-auto-d">إرسال الاستبيانات بناءً على محفزات</div></div>
+              <div class="toggle" id="toggle-auto" onclick="toggleSetting('autoSend',this)"><div class="toggle-k"></div></div>
+            </div>
+            <hr class="div">
+            <div class="fg"><label id="set-email-lbl">بريد الإشعارات</label><input class="fi" id="set-email" value="basemaleisawi@gmail.com"></div>
+            <div class="fg"><label id="set-thr-lbl">حد NPS للتنبيه (0-10)</label><input class="fi" type="number" id="set-threshold" min="0" max="10" value="7" style="max-width:100px"></div>
+            <div style="display:flex;gap:8px;margin-top:4px">
+              <button class="btn btn-outline btn-sm" onclick="exportAllData()" id="btn-export-data">📦 <span id="set-exp-lbl">تصدير البيانات</span></button>
+              <button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="resetSystem()" id="btn-reset">🗑 <span id="set-reset-lbl">إعادة ضبط</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+</div><!-- /admin -->
+
+
+<!-- ╔═══════════════════════════════════════════╗
+     ║            SURVEY PAGE (clients)          ║
+     ╚═══════════════════════════════════════════╝ -->
+<div id="survey-page">
+  <div class="sv-wrap">
+    <div class="sv-lang-bar">
+      <div class="lang-sw">
+        <button class="lang-btn on" id="sv-btn-ar" onclick="setSvLang('ar')">AR</button>
+        <button class="lang-btn" id="sv-btn-en" onclick="setSvLang('en')">EN</button>
+      </div>
+    </div>
+    <div class="sv-hd">
+      <div class="sv-logo">م</div>
+      <div class="sv-co" id="sv-co-name">مواردكم لحلول الأعمال</div>
+      <div class="sv-sub" id="sv-title">استبيان رضا العملاء</div>
+      <div class="sv-prog"><div class="sv-pf" id="sv-pf" style="width:5%"></div></div>
+    </div>
+    <div id="sv-form"></div>
+    <div class="sv-thanks" id="sv-thanks">
+      <span class="sv-tick">✅</span>
+      <h2 id="sv-thanks-h" style="color:var(--primary);margin-bottom:10px">شكراً لك!</h2>
+      <p id="sv-thanks-p" style="color:var(--muted)">تم إرسال تقييمك بنجاح. مواردكم تقدّر وقتك ورأيك الكريم.</p>
+    </div>
+    <div id="sv-footer">
+      <button class="btn btn-accent btn-full btn-lg" onclick="submitSurvey()" id="sv-submit-btn" style="margin-top:8px">
+        <span id="sv-submit-lbl">إرسال التقييم</span> ✈️
+      </button>
+      <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:10px" id="sv-privacy">بياناتك محمية ومحفوظة بسرية تامة 🔒</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ╔═══════════════════════════════════════════╗
+     ║              MODALS                       ║
+     ╚═══════════════════════════════════════════╝ -->
+
+<!-- Add Contact Modal -->
+<div class="ov" id="ov-contact">
+  <div class="modal">
+    <div class="modal-hd"><div class="modal-t" id="mc-title">+ إضافة جهة اتصال</div><button class="modal-x" onclick="closeOv('ov-contact')">✕</button></div>
+    <div class="modal-body">
+      <div class="frow">
+        <div class="fg"><label id="mc-name-lbl">الاسم <span class="req">*</span></label><input class="fi" id="mc-name" placeholder="الاسم الكامل"></div>
+        <div class="fg"><label id="mc-email-lbl">البريد الإلكتروني</label><input class="fi" id="mc-email" type="email" placeholder="email@example.com"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label id="mc-phone-lbl">رقم الجوال</label><input class="fi" id="mc-phone" placeholder="+966XXXXXXXXX" type="tel"></div>
+        <div class="fg" id="mc-company-fg"><label id="mc-company-lbl">اسم الشركة</label><input class="fi" id="mc-company" placeholder="اسم الشركة أو المؤسسة"></div>
+      </div>
+      <div class="fg"><label id="mc-status-lbl">الحالة</label>
+        <select class="fi" id="mc-status"><option value="active" id="mcs-active">نشط</option><option value="inactive" id="mcs-inactive">غير نشط</option></select>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="closeOv('ov-contact')" id="mc-cancel">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveContact()" id="mc-save">+ إضافة</button>
+    </div>
+  </div>
+</div>
+
+<!-- Survey Editor Modal -->
+<div class="ov" id="ov-editor">
+  <div class="modal" style="max-width:700px">
+    <div class="modal-hd"><div class="modal-t" id="ed-title">✏️ تعديل الاستبيان</div><button class="modal-x" onclick="closeOv('ov-editor')">✕</button></div>
+    <div class="modal-body">
+      <div class="frow mb">
+        <div class="fg"><label id="ed-name-ar-lbl">الاسم بالعربية</label><input class="fi" id="ed-name-ar" placeholder="اسم الاستبيان بالعربية"></div>
+        <div class="fg"><label id="ed-name-en-lbl">Name in English</label><input class="fi" id="ed-name-en" placeholder="Survey name in English"></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <strong id="ed-qs-lbl" style="font-size:13px">الأسئلة</strong>
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick="edAddQ('csat')">+ CSAT</button>
+          <button class="btn btn-ghost btn-sm" onclick="edAddQ('nps')">+ NPS</button>
+          <button class="btn btn-ghost btn-sm" onclick="edAddQ('ces')">+ CES</button>
+          <button class="btn btn-ghost btn-sm" onclick="edAddQ('text')" id="ed-add-text">+ نص</button>
+          <button class="btn btn-ghost btn-sm" onclick="edAddQ('choice')" id="ed-add-choice">+ اختيار</button>
+          <button class="btn btn-ghost btn-sm" onclick="edAddQ('yn')" id="ed-add-yn">+ نعم/لا</button>
+        </div>
+      </div>
+      <div id="ed-questions-list" style="max-height:380px;overflow-y:auto"></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="closeOv('ov-editor')" id="ed-cancel">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveSurveyEdits()" id="ed-save">💾 حفظ التعديلات</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="ov" id="ov-confirm">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-hd"><div class="modal-t" id="conf-title">تأكيد</div><button class="modal-x" onclick="closeOv('ov-confirm')">✕</button></div>
+    <div class="modal-body"><p id="conf-msg" style="font-size:14px;color:var(--text2)">هل أنت متأكد؟</p></div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="closeOv('ov-confirm')" id="conf-cancel">إلغاء</button>
+      <button class="btn btn-danger" id="conf-ok" onclick="confirmAction()">تأكيد</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ╔═══════════════════════════════════════════╗
+     ║              JAVASCRIPT                   ║
+     ╚═══════════════════════════════════════════╝ -->
+<script>
+'use strict';
+
+// ─────────────────────────────────────────────
+// TRANSLATIONS
+// ─────────────────────────────────────────────
+var T = {
+ar:{
+  brand:'مواردكم لحلول الأعمال', brand_en_shown:false,
+  tagline:'نظام إدارة تجربة العميل',
+  nl_main:'الرئيسية', nl_cx:'إدارة العملاء', nl_res:'النتائج', nl_sys:'النظام',
+  n_dash:'لوحة التحكم', n_contacts:'جهات الاتصال', n_surveys:'الاستبيانات',
+  n_send:'إرسال وجدولة', n_resp:'الردود الواردة', n_analytics:'التحليل والمقاييس',
+  n_int:'التكاملات', n_set:'الإعدادات',
+  pg_dash:'لوحة التحكم', pg_dash_sub:'نظرة عامة على مقاييس تجربة العميل',
+  pg_contacts:'جهات الاتصال', pg_contacts_sub:'إدارة قوائم الشرائح المستهدفة',
+  pg_surveys:'الاستبيانات', pg_surveys_sub:'عرض وتعديل الاستبيانات الثلاثة',
+  pg_send:'إرسال وجدولة', pg_send_sub:'أرسل الاستبيانات لجهات الاتصال',
+  pg_responses:'الردود الواردة', pg_responses_sub:'استعرض وحلّل جميع الردود',
+  pg_analytics:'التحليل والمقاييس', pg_analytics_sub:'NPS · CSAT · CES',
+  pg_int:'التكاملات', pg_int_sub:'Google Sheets وروابط الاستبيانات',
+  pg_settings:'الإعدادات', pg_settings_sub:'تخصيص النظام والهوية',
+  tb_send:'📤 إرسال سريع', tb_new:'+ استبيان',
+  uname:'مدير النظام',
+  m1l:'الاستبيانات المرسلة', m2l:'معدل الاستجابة', m3l:'CSAT الكلي', m4l:'NPS الكلي',
+  m1d:'هذا الشهر', m4d:'أعلى من المتوسط',
+  nps_badge:'ممتاز', nps_bench:'المتوسط العالمي: +34',
+  nps_pro:'مروّجون (9-10)', nps_pas:'محايدون (7-8)', nps_det:'منتقدون (0-6)',
+  csat_seg_t:'📊 CSAT حسب الشريحة', bs1:'الشركات العميلة', bs2:'المرشحون الأفراد', bs3:'الموظفون الخارجيون',
+  d_latest:'📋 آخر الردود', d_viewall:'عرض الكل ←',
+  th_name:'المستجيب', th_seg:'الشريحة', th_status:'الحالة', th_date:'التاريخ',
+  dash_alert_msg:'لديك <strong>{n} ردوداً جديدة</strong> — بعضها يحتاج متابعة فورية. <a href="#" onclick="goto(\'responses\');return false" style="color:var(--primary);font-weight:700">عرض الردود ←</a>',
+  ct_co:'🏢 الشركات', ct_ca:'👤 المرشحون', ct_ou:'🧑‍💼 الموظفون الخارجيون',
+  ct_import:'📥 استيراد CSV', ct_export:'📤 تصدير CSV', ct_template:'📄 تنزيل نموذج', ct_add:'+ إضافة',
+  ct_count_0:'لا توجد جهات اتصال', ct_count_n:'{n} جهة اتصال',
+  ct_empty_t:'لا توجد جهات اتصال',
+  ct_empty_d:'استورد ملف CSV أو أضف جهة اتصال يدوياً',
+  th_name2:'الاسم', th_email:'البريد', th_phone:'الجوال', th_company:'الشركة', th_host:'الشركة المضيفة', th_status2:'الحالة', th_acts:'إجراءات',
+  status_active:'نشط', status_inactive:'غير نشط',
+  sv_hint_msg:'اضغط "تعديل" لأي استبيان لتعديل أسئلته وإضافة أسئلة جديدة أو حذف موجودة.',
+  sv_edit:'✏️ تعديل', sv_preview:'👁 معاينة', sv_resp_count:'{n} رداً مستلماً',
+  sv_active:'نشط', sv_draft:'مسودة', sv_segment:'الشريحة',
+  send_t:'إرسال الاستبيانات', lbl_pick_sv:'اختر الاستبيان', lbl_pick_seg:'الشريحة المستهدفة',
+  so_co:'استبيان رضا الشركات العميلة', so_ca:'تجربة المرشحين والأفراد', so_ou:'تقييم الموظف الخارجي',
+  sso_co:'الشركات العميلة', sso_ca:'المرشحون الأفراد', sso_ou:'الموظفون الخارجيون',
+  lbl_sv_link:'رابط الاستبيان المباشر',
+  sv_link_hint:'شارك هذا الرابط مباشرة عبر بريد إلكتروني أو واتساب أو SMS',
+  btn_copy_link:'نسخ', msgs_t:'💬 الرسائل الشخصية', btn_copy_all:'📋 نسخ الكل',
+  gen_msgs_lbl:'توليد الرسائل', add_contacts_lbl:'إدارة جهات الاتصال',
+  send_no_contacts:'<div class="alert al-warn"><span class="alert-ic">⚠️</span><div>لا توجد جهات اتصال في هذه الشريحة — <a href="#" onclick="goto(\'contacts\');return false" style="color:var(--primary);font-weight:700">اذهب لإضافتها</a></div></div>',
+  send_contacts_info:'<span class="badge b-info">📋 {n} جهة اتصال جاهزة للإرسال</span>',
+  msg_template:'مرحباً {name}،\nتدعوك {company} لتقييم تجربتك معنا.\nيستغرق الاستبيان أقل من دقيقتين:\n{url}\nشكراً لك 🙏',
+  f_lbl:'تصفية:', f_all:'كل الشرائح', f_co:'الشركات', f_ca:'المرشحون', f_ou:'الموظفون الخارجيون',
+  f_all_s:'كل الحالات', f_followup:'يحتاج متابعة', f_done:'مكتمل',
+  btn_export:'📊 تصدير CSV', btn_clear_resp:'🗑 مسح الكل',
+  resp_done:'مكتمل', resp_followup:'يحتاج متابعة',
+  resp_followup_btn:'📞 متابعة', resp_del_btn:'🗑',
+  a_overall:'الكلي', seg_cmp_t:'📊 مقارنة الشرائح',
+  ah_seg:'الشريحة', ah_resp:'الردود', ah_status:'الحالة',
+  ac_co:'الشركات العميلة', ac_ca:'المرشحون الأفراد', ac_ou:'الموظفون الخارجيون',
+  ac_ex:'ممتاز', ac_gd:'جيد', ac_ni:'يحتاج تحسين',
+  nps_det_t:'🎯 تحليل NPS التفصيلي', anps_pro:'مروّجون', anps_pas:'محايدون', anps_det:'منتقدون',
+  anps_co:'الشركات', anps_ca:'المرشحون', anps_ou:'الخارجيون',
+  csat_dist_t:'⭐ توزيع CSAT', csat_rate_lbl:'نسبة الرضا (4-5 نجوم)',
+  ces_t:'⚡ تحليل CES', ces_out:'متوسط كلي / من 7',
+  ces_co:'الشركات', ces_ca:'المرشحون', ces_ou:'الخارجيون',
+  ces_warn:'CES الموظفين الخارجيين منخفض — يُنصح بمراجعة إجراءات التأهيل.',
+  int_gs_t:'Google Sheets & Apps Script', int_url_lbl:'Apps Script Web App URL',
+  int_url_hint:'انسخ الرابط بعد نشر الـ Script كـ Web App', int_save_lbl:'حفظ وربط', int_test_lbl:'اختبار الاتصال',
+  int_steps_t:'خطوات الإعداد:', int_links_t:'روابط الاستبيانات المباشرة',
+  int_copy_code:'📋 نسخ الكود', il_co:'🏢 الشركات العميلة', il_ca:'👤 المرشحون الأفراد', il_ou:'🧑‍💼 الموظفون الخارجيون',
+  il_co_btn:'نسخ', il_ca_btn:'نسخ', il_ou_btn:'نسخ',
+  set_ui_t:'تخصيص الهوية', set_name_lbl:'اسم الشركة', set_color_lbl:'اللون الرئيسي',
+  btn_save_set:'💾 حفظ الإعدادات', set_save_lbl:'حفظ الإعدادات',
+  set_sys_t:'إعدادات النظام', set_notif_lbl:'تنبيه المنتقدين فوراً', set_notif_d:'إرسال بريد عند NPS أقل من الحد',
+  set_auto_lbl:'الإرسال التلقائي', set_auto_d:'إرسال الاستبيانات بناءً على محفزات',
+  set_email_lbl:'بريد الإشعارات', set_thr_lbl:'حد NPS للتنبيه (0-10)',
+  set_exp_lbl:'تصدير البيانات', set_reset_lbl:'إعادة ضبط',
+  mc_title:'+ إضافة جهة اتصال', mc_name_lbl:'الاسم', mc_email_lbl:'البريد الإلكتروني',
+  mc_phone_lbl:'رقم الجوال', mc_company_lbl:'اسم الشركة', mc_status_lbl:'الحالة',
+  mcs_active:'نشط', mcs_inactive:'غير نشط', mc_cancel:'إلغاء', mc_save:'+ إضافة',
+  ed_title:'✏️ تعديل الاستبيان', ed_name_ar_lbl:'الاسم بالعربية', ed_name_en_lbl:'Name in English',
+  ed_qs_lbl:'الأسئلة', ed_add_text:'+ نص', ed_add_choice:'+ اختيار', ed_add_yn:'+ نعم/لا',
+  ed_cancel:'إلغاء', ed_save:'💾 حفظ التعديلات',
+  at_ov:'نظرة عامة', at_nps:'NPS', at_csat:'CSAT', at_ces:'CES',
+  seg_companies:'الشركات العميلة', seg_candidates:'المرشحون الأفراد', seg_outsource:'الموظفون الخارجيون',
+  sv_co_name_ar:'مواردكم لحلول الأعمال', sv_co_name_en:'Mawaridcom for Business Solutions',
+  sv_submit_lbl:'إرسال التقييم', sv_privacy:'بياناتك محمية ومحفوظة بسرية تامة 🔒',
+  sv_thanks_h:'شكراً لك!', sv_thanks_p:'تم إرسال تقييمك بنجاح. مواردكم تقدّر وقتك ورأيك الكريم.',
+  sv_step_of:'{i} من {n}',
+  sv_q_hard:'صعب جداً', sv_q_easy:'سهل جداً', sv_q_likely:'محتمل جداً', sv_q_unlikely:'غير محتمل',
+  sv_q_unsat:'غير راضٍ', sv_q_sat:'راضٍ جداً',
+  copy_ok:'✅ تم النسخ!', conn_testing:'جارٍ الاختبار...', conn_ok:'✅ الاتصال ناجح!', conn_fail:'❌ فشل الاتصال — تحقق من الرابط',
+  reset_confirm:'سيتم حذف جميع البيانات. هل أنت متأكد؟', clear_resp_confirm:'سيتم حذف جميع الردود. هل أنت متأكد؟',
+  del_contact_confirm:'حذف هذه الجهة؟'
+},
+en:{
+  brand:'Mawaridcom for Business Solutions',
+  tagline:'Customer Experience Management System',
+  nl_main:'MAIN', nl_cx:'CLIENT MANAGEMENT', nl_res:'RESULTS', nl_sys:'SYSTEM',
+  n_dash:'Dashboard', n_contacts:'Contacts', n_surveys:'Surveys',
+  n_send:'Send & Schedule', n_resp:'Responses', n_analytics:'Analytics',
+  n_int:'Integrations', n_set:'Settings',
+  pg_dash:'Dashboard', pg_dash_sub:'Overview of customer experience metrics',
+  pg_contacts:'Contacts', pg_contacts_sub:'Manage target segment lists',
+  pg_surveys:'Surveys', pg_surveys_sub:'View and edit all three surveys',
+  pg_send:'Send & Schedule', pg_send_sub:'Send surveys to your contact lists',
+  pg_responses:'Responses', pg_responses_sub:'Review and analyze all responses',
+  pg_analytics:'Analytics', pg_analytics_sub:'NPS · CSAT · CES',
+  pg_int:'Integrations', pg_int_sub:'Google Sheets and survey links',
+  pg_settings:'Settings', pg_settings_sub:'Customize the system and branding',
+  tb_send:'📤 Quick Send', tb_new:'+ Survey',
+  uname:'System Admin',
+  m1l:'Surveys Sent', m2l:'Response Rate', m3l:'Overall CSAT', m4l:'Overall NPS',
+  m1d:'this month', m4d:'Above average',
+  nps_badge:'Excellent', nps_bench:'Global benchmark: +34',
+  nps_pro:'Promoters (9-10)', nps_pas:'Passives (7-8)', nps_det:'Detractors (0-6)',
+  csat_seg_t:'📊 CSAT by Segment', bs1:'Client Companies', bs2:'Individual Candidates', bs3:'Outsourced Employees',
+  d_latest:'📋 Latest Responses', d_viewall:'View All →',
+  th_name:'Respondent', th_seg:'Segment', th_status:'Status', th_date:'Date',
+  dash_alert_msg:'You have <strong>{n} new responses</strong> — some need immediate follow-up. <a href="#" onclick="goto(\'responses\');return false" style="color:var(--primary);font-weight:700">View Responses →</a>',
+  ct_co:'🏢 Companies', ct_ca:'👤 Candidates', ct_ou:'🧑‍💼 Outsourced',
+  ct_import:'📥 Import CSV', ct_export:'📤 Export CSV', ct_template:'📄 Download Template', ct_add:'+ Add',
+  ct_count_0:'No contacts', ct_count_n:'{n} contacts',
+  ct_empty_t:'No contacts yet', ct_empty_d:'Import a CSV file or add contacts manually',
+  th_name2:'Name', th_email:'Email', th_phone:'Phone', th_company:'Company', th_host:'Host Company', th_status2:'Status', th_acts:'Actions',
+  status_active:'Active', status_inactive:'Inactive',
+  sv_hint_msg:'Click "Edit" on any survey to modify its questions, add new ones, or delete existing ones.',
+  sv_edit:'✏️ Edit', sv_preview:'👁 Preview', sv_resp_count:'{n} responses received',
+  sv_active:'Active', sv_draft:'Draft', sv_segment:'Segment',
+  send_t:'Send Surveys', lbl_pick_sv:'Choose Survey', lbl_pick_seg:'Target Segment',
+  so_co:'Client Companies Satisfaction Survey', so_ca:'Candidate Experience Survey', so_ou:'Outsourced Employee Evaluation',
+  sso_co:'Client Companies', sso_ca:'Individual Candidates', sso_ou:'Outsourced Employees',
+  lbl_sv_link:'Direct Survey Link',
+  sv_link_hint:'Share this link directly via email, WhatsApp, or SMS',
+  btn_copy_link:'Copy', msgs_t:'💬 Personal Messages', btn_copy_all:'📋 Copy All',
+  gen_msgs_lbl:'Generate Messages', add_contacts_lbl:'Manage Contacts',
+  send_no_contacts:'<div class="alert al-warn"><span class="alert-ic">⚠️</span><div>No contacts in this segment — <a href="#" onclick="goto(\'contacts\');return false" style="color:var(--primary);font-weight:700">go add them</a></div></div>',
+  send_contacts_info:'<span class="badge b-info">📋 {n} contacts ready to send</span>',
+  msg_template:'Hello {name},\n{company} invites you to share your experience with us.\nTakes less than 2 minutes:\n{url}\nThank you 🙏',
+  f_lbl:'Filter:', f_all:'All Segments', f_co:'Companies', f_ca:'Candidates', f_ou:'Outsourced',
+  f_all_s:'All Statuses', f_followup:'Needs Follow-up', f_done:'Done',
+  btn_export:'📊 Export CSV', btn_clear_resp:'🗑 Clear All',
+  resp_done:'Done', resp_followup:'Follow-up',
+  resp_followup_btn:'📞 Follow up', resp_del_btn:'🗑',
+  a_overall:'Overall', seg_cmp_t:'📊 Segment Comparison',
+  ah_seg:'Segment', ah_resp:'Responses', ah_status:'Status',
+  ac_co:'Client Companies', ac_ca:'Individual Candidates', ac_ou:'Outsourced Employees',
+  ac_ex:'Excellent', ac_gd:'Good', ac_ni:'Needs Improvement',
+  nps_det_t:'🎯 Detailed NPS Analysis', anps_pro:'Promoters', anps_pas:'Passives', anps_det:'Detractors',
+  anps_co:'Companies', anps_ca:'Candidates', anps_ou:'Outsourced',
+  csat_dist_t:'⭐ CSAT Distribution', csat_rate_lbl:'Satisfaction rate (4-5 stars)',
+  ces_t:'⚡ CES Analysis', ces_out:'Overall average / out of 7',
+  ces_co:'Companies', ces_ca:'Candidates', ces_ou:'Outsourced',
+  ces_warn:'Outsourced Employees CES is low — review onboarding procedures.',
+  int_gs_t:'Google Sheets & Apps Script', int_url_lbl:'Apps Script Web App URL',
+  int_url_hint:'Copy the URL after deploying the Script as a Web App', int_save_lbl:'Save & Connect', int_test_lbl:'Test Connection',
+  int_steps_t:'Setup Steps:', int_links_t:'Direct Survey Links',
+  int_copy_code:'📋 Copy Code', il_co:'🏢 Client Companies', il_ca:'👤 Individual Candidates', il_ou:'🧑‍💼 Outsourced Employees',
+  il_co_btn:'Copy', il_ca_btn:'Copy', il_ou_btn:'Copy',
+  set_ui_t:'Interface Customization', set_name_lbl:'Company Name', set_color_lbl:'Primary Color',
+  btn_save_set:'💾 Save Settings', set_save_lbl:'Save Settings',
+  set_sys_t:'System Settings', set_notif_lbl:'Alert Detractors Instantly', set_notif_d:'Send email when NPS is below threshold',
+  set_auto_lbl:'Automatic Sending', set_auto_d:'Send surveys based on triggers',
+  set_email_lbl:'Notification Email', set_thr_lbl:'NPS Alert Threshold (0-10)',
+  set_exp_lbl:'Export Data', set_reset_lbl:'Reset System',
+  mc_title:'+ Add Contact', mc_name_lbl:'Name', mc_email_lbl:'Email Address',
+  mc_phone_lbl:'Phone Number', mc_company_lbl:'Company Name', mc_status_lbl:'Status',
+  mcs_active:'Active', mcs_inactive:'Inactive', mc_cancel:'Cancel', mc_save:'+ Add',
+  ed_title:'✏️ Edit Survey', ed_name_ar_lbl:'Arabic Name', ed_name_en_lbl:'English Name',
+  ed_qs_lbl:'Questions', ed_add_text:'+ Text', ed_add_choice:'+ Choice', ed_add_yn:'+ Yes/No',
+  ed_cancel:'Cancel', ed_save:'💾 Save Changes',
+  at_ov:'Overview', at_nps:'NPS', at_csat:'CSAT', at_ces:'CES',
+  seg_companies:'Client Companies', seg_candidates:'Individual Candidates', seg_outsource:'Outsourced Employees',
+  sv_co_name_ar:'مواردكم لحلول الأعمال', sv_co_name_en:'Mawaridcom for Business Solutions',
+  sv_submit_lbl:'Submit Survey', sv_privacy:'Your data is protected and kept strictly confidential 🔒',
+  sv_thanks_h:'Thank You!', sv_thanks_p:'Your feedback was submitted successfully. Mawaridcom appreciates your time.',
+  sv_step_of:'{i} of {n}',
+  sv_q_hard:'Very difficult', sv_q_easy:'Very easy', sv_q_likely:'Very likely', sv_q_unlikely:'Not likely',
+  sv_q_unsat:'Not satisfied', sv_q_sat:'Very satisfied',
+  copy_ok:'✅ Copied!', conn_testing:'Testing connection...', conn_ok:'✅ Connection successful!', conn_fail:'❌ Connection failed — check the URL',
+  reset_confirm:'All data will be deleted. Are you sure?', clear_resp_confirm:'All responses will be deleted. Are you sure?',
+  del_contact_confirm:'Delete this contact?'
+}};
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+var LANG = 'ar';
+var currentPage = 'dashboard';
+var currentContactTab = 'companies';
+var editingSurveyId = null;
+var confirmCallback = null;
+var respFilters = {};
+var svLang = 'ar';
+var svType = '';
+var svAnswers = {};
+
+// ─────────────────────────────────────────────
+// DATA (localStorage)
+// ─────────────────────────────────────────────
+function ls(k, def){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):def; }catch(e){ return def; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+
+function initData(){
+  if(ls('mcx_init',false)) return;
+  lsSet('mcx_surveys',[
+    { id:'companies', nameAr:'استبيان رضا الشركات العميلة', nameEn:'Client Companies Satisfaction Survey', segment:'companies', active:true, questions:[
+      {id:'q1',type:'info',textAr:'اسم الشركة',textEn:'Company Name',required:true},
+      {id:'q2',type:'info',textAr:'اسم جهة الاتصال',textEn:'Contact Name',required:false},
+      {id:'q3',type:'csat',textAr:'ما مدى رضاك العام عن خدمات مواردكم؟',textEn:'How satisfied are you with Mawaridcom services overall?'},
+      {id:'q4',type:'nps',textAr:'ما مدى احتمال توصيتك بمواردكم لشركاء أعمالك؟',textEn:'How likely are you to recommend Mawaridcom to your business partners?'},
+      {id:'q5',type:'ces',textAr:'كم كان سهلاً التعامل مع فريق مواردكم؟',textEn:'How easy was it to work with the Mawaridcom team?'},
+      {id:'q6',type:'text',textAr:'ما الذي يمكننا تحسينه في خدماتنا؟',textEn:'What can we improve in our services?'}
+    ]},
+    { id:'candidates', nameAr:'استبيان تجربة المرشحين والأفراد', nameEn:'Candidate Experience Survey', segment:'candidates', active:true, questions:[
+      {id:'q1',type:'csat',textAr:'كيف تقيّم تجربتك مع مواردكم بشكل عام؟',textEn:'How do you rate your experience with Mawaridcom overall?'},
+      {id:'q2',type:'nps',textAr:'هل ستوصي بمواردكم لأصدقائك وعائلتك؟',textEn:'Would you recommend Mawaridcom to your friends and family?'},
+      {id:'q3',type:'ces',textAr:'كم كانت عملية التسجيل والتوظيف سهلة؟',textEn:'How easy was the registration and placement process?'},
+      {id:'q4',type:'choice',textAr:'ما الذي أعجبك أكثر في تعاملك معنا؟',textEn:'What did you like most about working with us?',optionsAr:['السرعة في الاستجابة','الاحترافية','جودة التواصل','الدعم المستمر'],optionsEn:['Speed of response','Professionalism','Quality of communication','Continuous support']},
+      {id:'q5',type:'text',textAr:'ما الذي نحتاج تحسينه؟',textEn:'What do we need to improve?'}
+    ]},
+    { id:'outsource', nameAr:'تقييم الموظف الخارجي', nameEn:'Outsourced Employee Evaluation', segment:'outsource', active:true, questions:[
+      {id:'q1',type:'csat',textAr:'هل بيئة العمل في الشركة المضيفة مناسبة لك؟',textEn:'Is the work environment at the host company suitable for you?'},
+      {id:'q2',type:'nps',textAr:'ما مدى احتمال استمرارك في العمل مع مواردكم؟',textEn:'How likely are you to continue working with Mawaridcom?'},
+      {id:'q3',type:'ces',textAr:'ما مدى سهولة التعامل مع الإجراءات الإدارية في مواردكم؟',textEn:'How easy are the administrative procedures at Mawaridcom?'},
+      {id:'q4',type:'yn',textAr:'هل واجهت أي مشاكل في صرف الراتب أو المستحقات؟',textEn:'Did you face any issues with salary or entitlements?'},
+      {id:'q5',type:'text',textAr:'ما الدعم الذي تحتاجه من مواردكم؟',textEn:'What support do you need from Mawaridcom?'},
+      {id:'q6',type:'phone',textAr:'رقم جوالك للتواصل (اختياري)',textEn:'Your phone number for contact (optional)',required:false}
+    ]}
+  ]);
+  lsSet('mcx_responses',[
+    {id:'r1',segment:'companies',nameAr:'شركة المراكز العربية',nameEn:'Al-Marakez Co.',csat:5,nps:9,ces:6,commentAr:'خدمة ممتازة وسريعة. فريق محترف جداً.',commentEn:'Excellent and fast service.',status:'done',date:'2025-04-14'},
+    {id:'r2',segment:'candidates',nameAr:'أحمد الغامدي',nameEn:'Ahmed Al-Ghamdi',csat:3,nps:5,ces:3,commentAr:'الإجراءات معقدة، أحتاج دعم أكثر.',commentEn:'Complex procedures.',status:'followup',date:'2025-04-13'},
+    {id:'r3',segment:'outsource',nameAr:'نورة السلمي',nameEn:'Noura Al-Salmi',csat:4,nps:8,ces:5,commentAr:'بيئة عمل جيدة، التواصل ممتاز.',commentEn:'Good work environment.',status:'done',date:'2025-04-12'}
+  ]);
+  lsSet('mcx_contacts_companies',[]);
+  lsSet('mcx_contacts_candidates',[]);
+  lsSet('mcx_contacts_outsource',[]);
+  lsSet('mcx_settings',{lang:'ar',npsThreshold:7,notifyDetractors:true,autoSend:false,notifyEmail:'basemaleisawi@gmail.com'});
+  lsSet('mcx_init',true);
+}
+
+function getSurveys(){ return ls('mcx_surveys',[]); }
+function getResponses(){ return ls('mcx_responses',[]); }
+function getContacts(seg){ return ls('mcx_contacts_'+seg,[]); }
+function getSettings(){ return ls('mcx_settings',{lang:'ar',npsThreshold:7,notifyDetractors:true,autoSend:false,notifyEmail:'basemaleisawi@gmail.com'}); }
+
+// ─────────────────────────────────────────────
+// LANGUAGE
+// ─────────────────────────────────────────────
+function t(k){ return T[LANG][k]||T['ar'][k]||k; }
+function setLang(l){
+  LANG=l;
+  var root=document.getElementById('html-root');
+  root.lang=l; root.dir=l==='ar'?'rtl':'ltr';
+  document.body.classList.toggle('en',l==='en');
+  document.getElementById('btn-ar').classList.toggle('on',l==='ar');
+  document.getElementById('btn-en').classList.toggle('on',l==='en');
+  document.getElementById('sb-name-ar').style.display=l==='ar'?'':'none';
+  document.getElementById('sb-name-en').style.display=l==='en'?'':'none';
+  applyTranslations();
+  renderCurrentPage();
+  var s=getSettings(); s.lang=l; lsSet('mcx_settings',s);
+}
+function applyTranslations(){
+  var ids=Object.keys(T[LANG]);
+  ids.forEach(function(k){
+    var el=document.getElementById(k.replace(/_/g,'-'));
+    if(el && el.tagName!=='INPUT' && el.tagName!=='TEXTAREA' && el.tagName!=='SELECT'){
+      el.innerHTML=t(k);
+    }
+  });
+  // specific text nodes
+  setText('n-dash',t('n_dash')); setText('n-contacts',t('n_contacts')); setText('n-surveys',t('n_surveys'));
+  setText('n-send',t('n_send')); setText('n-resp',t('n_resp')); setText('n-analytics',t('n_analytics'));
+  setText('n-int',t('n_int')); setText('n-set',t('n_set'));
+  setText('nl-main',t('nl_main')); setText('nl-cx',t('nl_cx')); setText('nl-res',t('nl_res')); setText('nl-sys',t('nl_sys'));
+  setText('sb-tg',t('tagline')); setText('sb-uname',t('uname'));
+  setText('tb-send',t('tb_send')); setText('tb-new',t('tb_new'));
+}
+function setText(id,txt){ var el=document.getElementById(id); if(el) el.textContent=txt; }
+function setHTML(id,html){ var el=document.getElementById(id); if(el) el.innerHTML=html; }
+
+// ─────────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────────
+var PAGE_META={
+  dashboard:  {title:'pg_dash',  sub:'pg_dash_sub'},
+  contacts:   {title:'pg_contacts', sub:'pg_contacts_sub'},
+  surveys:    {title:'pg_surveys',  sub:'pg_surveys_sub'},
+  send:       {title:'pg_send',     sub:'pg_send_sub'},
+  responses:  {title:'pg_responses',sub:'pg_responses_sub'},
+  analytics:  {title:'pg_analytics',sub:'pg_analytics_sub'},
+  integrations:{title:'pg_int',    sub:'pg_int_sub'},
+  settings:   {title:'pg_settings', sub:'pg_settings_sub'}
+};
+function goto(page){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('on')});
+  document.querySelectorAll('.nav-a').forEach(function(a){a.classList.remove('on')});
+  var pg=document.getElementById('page-'+page);
+  if(pg) pg.classList.add('on');
+  document.querySelectorAll('.nav-a').forEach(function(a){
+    if(a.getAttribute('onclick')==="goto('"+page+"')") a.classList.add('on');
+  });
+  var m=PAGE_META[page]||{};
+  document.getElementById('pg-title').textContent=t(m.title||page);
+  document.getElementById('pg-sub').textContent=t(m.sub||'');
+  currentPage=page;
+  renderCurrentPage();
+}
+function renderCurrentPage(){
+  if(currentPage==='dashboard') renderDash();
+  else if(currentPage==='contacts') renderContacts(currentContactTab);
+  else if(currentPage==='surveys') renderSurveys();
+  else if(currentPage==='responses') renderResponses();
+  else if(currentPage==='send') updateSendPreview();
+  else if(currentPage==='settings') loadSettings();
+}
+
+// ─────────────────────────────────────────────
+// DASHBOARD
+// ─────────────────────────────────────────────
+function renderDash(){
+  var resp=getResponses();
+  var n=resp.length;
+  setHTML('dash-alert-msg',t('dash_alert_msg').replace('{n}',n));
+  document.getElementById('resp-count').textContent=n;
+  // table
+  var tbody=document.getElementById('dash-tbody');
+  if(!tbody) return;
+  var seg_map={companies:t('seg_companies'),candidates:t('seg_candidates'),outsource:t('seg_outsource')};
+  tbody.innerHTML=resp.slice(-5).reverse().map(function(r){
+    var nc=r.nps>=9?'var(--success)':r.nps<=6?'var(--danger)':'var(--warn)';
+    var sc=r.csat>=4?'var(--success)':r.csat<=2?'var(--danger)':'var(--warn)';
+    var cc=r.ces>=5?'var(--success)':r.ces<=3?'var(--danger)':'var(--warn)';
+    return '<tr><td><strong>'+(LANG==='ar'?r.nameAr:r.nameEn)+'</strong></td><td><span class="badge b-info">'+( seg_map[r.segment]||r.segment)+'</span></td><td style="font-weight:800;color:'+nc+'">'+r.nps+'</td><td style="font-weight:700;color:'+sc+'">'+r.csat+'/5</td><td style="font-weight:700;color:'+cc+'">'+r.ces+'/7</td><td><span class="badge '+(r.status==='done'?'b-success':'b-warn')+'">'+(r.status==='done'?t('resp_done'):t('resp_followup'))+'</span></td><td style="color:var(--muted)">'+r.date+'</td></tr>';
+  }).join('');
+}
+
+// ─────────────────────────────────────────────
+// CONTACTS
+// ─────────────────────────────────────────────
+function switchContactTab(seg, btn){
+  currentContactTab=seg;
+  document.querySelectorAll('#contacts-tabs .tab-btn').forEach(function(b){b.classList.remove('on')});
+  if(btn) btn.classList.add('on');
+  renderContacts(seg);
+}
+function renderContacts(seg){
+  var contacts=getContacts(seg);
+  var isCompanies=seg==='companies', isOutsource=seg==='outsource';
+  var countText=contacts.length===0?t('ct_count_0'):t('ct_count_n').replace('{n}',contacts.length);
+  var html='<div class="card">';
+  html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">';
+  html+='<div style="font-size:13px;color:var(--text2)">'+countText+'</div>';
+  html+='<div style="display:flex;gap:7px;flex-wrap:wrap">';
+  html+='<button class="btn btn-ghost btn-sm" onclick="importCSV(\''+seg+'\')">'+t('ct_import')+'</button>';
+  html+='<button class="btn btn-ghost btn-sm" onclick="exportCSV(\''+seg+'\')">'+t('ct_export')+'</button>';
+  html+='<button class="btn btn-ghost btn-sm" onclick="downloadTemplate(\''+seg+'\')">'+t('ct_template')+'</button>';
+  html+='<button class="btn btn-primary btn-sm" onclick="openAddContact(\''+seg+'\')">'+t('ct_add')+'</button>';
+  html+='</div></div>';
+  // hidden file input
+  html+='<input type="file" id="csv-input-'+seg+'" accept=".csv,text/csv" style="display:none" onchange="handleCSV(this,\''+seg+'\')">';
+  if(contacts.length===0){
+    html+='<div class="empty"><span class="empty-ic">📭</span><div class="empty-t">'+t('ct_empty_t')+'</div><div class="empty-d">'+t('ct_empty_d')+'</div></div>';
+  } else {
+    html+='<div class="tbl-wrap"><table><thead><tr><th>'+t('th_name2')+'</th><th>'+t('th_email')+'</th><th>'+t('th_phone')+'</th>';
+    if(isCompanies) html+='<th>'+t('th_company')+'</th>';
+    if(isOutsource) html+='<th>'+t('th_host')+'</th>';
+    html+='<th>'+t('th_status2')+'</th><th>'+t('th_acts')+'</th></tr></thead><tbody>';
+    contacts.forEach(function(c){
+      html+='<tr><td><strong>'+esc(c.name)+'</strong></td><td style="color:var(--muted);font-size:12px">'+esc(c.email||'—')+'</td><td style="color:var(--muted);font-size:12px">'+esc(c.phone||'—')+'</td>';
+      if(isCompanies||isOutsource) html+='<td>'+esc(c.company||'—')+'</td>';
+      html+='<td><span class="badge '+(c.status==='active'?'b-success':'b-gray')+'">'+(c.status==='active'?t('status_active'):t('status_inactive'))+'</span></td>';
+      html+='<td><button class="btn btn-ghost btn-sm" style="color:var(--danger);min-width:32px" onclick="deleteContact(\''+seg+'\',\''+c.id+'\')">🗑</button></td></tr>';
+    });
+    html+='</tbody></table></div>';
+  }
+  html+='</div>';
+  document.getElementById('contacts-content').innerHTML=html;
+}
+function importCSV(seg){
+  var inp=document.getElementById('csv-input-'+seg);
+  if(inp) inp.click();
+}
+function handleCSV(input, seg){
+  var file=input.files[0]; if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var lines=e.target.result.split(/\r?\n/).filter(function(l){return l.trim()});
+    if(lines.length<2){alert('الملف فارغ أو لا يحتوي على بيانات كافية'); return;}
+    var headers=lines[0].split(',').map(function(h){return h.trim()});
+    var contacts=getContacts(seg);
+    var added=0;
+    for(var i=1;i<lines.length;i++){
+      var cells=lines[i].split(',').map(function(c){return c.trim().replace(/^"|"$/g,'')});
+      if(!cells[0]) continue;
+      var c={id:'c'+Date.now()+i, name:cells[0]||'', email:cells[1]||'', phone:cells[2]||'', company:cells[3]||'', status:cells[4]||cells[3]||'نشط', segment:seg, lastSent:null};
+      if(seg==='candidates'){ c.status=cells[3]||'نشط'; c.company=''; }
+      contacts.push(c); added++;
+    }
+    lsSet('mcx_contacts_'+seg, contacts);
+    renderContacts(seg);
+    alert('✅ تم استيراد '+added+' جهة اتصال');
+    input.value='';
+  };
+  reader.readAsText(file,'UTF-8');
+}
+function exportCSV(seg){
+  var contacts=getContacts(seg);
+  var isC=seg==='companies', isO=seg==='outsource';
+  var hdrs=['الاسم','البريد الإلكتروني','رقم الجوال'];
+  if(isC||isO) hdrs.push(isC?'اسم الشركة':'الشركة المضيفة');
+  hdrs.push('الحالة');
+  var rows=[hdrs.join(',')];
+  contacts.forEach(function(c){
+    var row=[c.name,c.email,c.phone];
+    if(isC||isO) row.push(c.company||'');
+    row.push(c.status||'نشط');
+    rows.push(row.join(','));
+  });
+  downloadFile(rows.join('\n'), 'contacts_'+seg+'.csv','text/csv;charset=utf-8;');
+}
+function downloadTemplate(seg){
+  var templates={
+    companies:'الاسم,البريد الإلكتروني,رقم الجوال,اسم الشركة,الحالة\nشركة الجزيرة,hr@jazira.sa,+966512345678,الجزيرة للمقاولات,نشط',
+    candidates:'الاسم,البريد الإلكتروني,رقم الجوال,الحالة\nأحمد العتيبي,ahmed@email.com,+966512345678,نشط',
+    outsource:'الاسم,البريد الإلكتروني,رقم الجوال,الشركة المضيفة,الحالة\nفيصل الدوسري,faisal@email.com,+966512345678,شركة أرامكو,نشط'
+  };
+  downloadFile(templates[seg]||'', 'template_'+seg+'.csv','text/csv;charset=utf-8;');
+}
+function openAddContact(seg){
+  currentContactTab=seg;
+  var isC=seg==='companies', isO=seg==='outsource';
+  document.getElementById('mc-company-fg').style.display=(isC||isO)?'':'none';
+  document.getElementById('mc-company-lbl').textContent=isO?t('th_host'):t('mc_company_lbl');
+  document.getElementById('mc-name').value='';
+  document.getElementById('mc-email').value='';
+  document.getElementById('mc-phone').value='';
+  document.getElementById('mc-company').value='';
+  document.getElementById('mc-status').value='active';
+  openOv('ov-contact');
+}
+function saveContact(){
+  var name=document.getElementById('mc-name').value.trim();
+  if(!name){alert(LANG==='ar'?'الاسم مطلوب':'Name is required');return;}
+  var seg=currentContactTab;
+  var contacts=getContacts(seg);
+  contacts.push({
+    id:'c'+Date.now(), name:name,
+    email:document.getElementById('mc-email').value.trim(),
+    phone:document.getElementById('mc-phone').value.trim(),
+    company:document.getElementById('mc-company').value.trim(),
+    status:document.getElementById('mc-status').value,
+    segment:seg, lastSent:null
+  });
+  lsSet('mcx_contacts_'+seg,contacts);
+  closeOv('ov-contact');
+  renderContacts(seg);
+}
+function deleteContact(seg, id){
+  showConfirm(t('del_contact_confirm'),function(){
+    var c=getContacts(seg).filter(function(x){return x.id!==id});
+    lsSet('mcx_contacts_'+seg,c);
+    renderContacts(seg);
+  });
+}
+
+// ─────────────────────────────────────────────
+// SURVEYS
+// ─────────────────────────────────────────────
+function renderSurveys(){
+  var surveys=getSurveys();
+  var resp=getResponses();
+  var html='';
+  surveys.forEach(function(sv){
+    var cnt=resp.filter(function(r){return r.segment===sv.segment}).length;
+    html+='<div class="card mb" style="border-right:4px solid var(--primary)">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px">';
+    html+='<div style="flex:1">';
+    html+='<div style="font-weight:800;font-size:15px;color:var(--primary);margin-bottom:4px">'+(LANG==='ar'?sv.nameAr:sv.nameEn)+'</div>';
+    html+='<div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:8px">';
+    html+='<span class="badge '+(sv.active?'b-success':'b-gray')+'">'+(sv.active?t('sv_active'):t('sv_draft'))+'</span>';
+    html+='<span class="badge b-info">'+t('seg_'+sv.segment)+'</span>';
+    html+='<span class="badge b-gray">'+sv.questions.length+' أسئلة</span>';
+    html+='</div>';
+    html+='<div style="font-size:12px;color:var(--muted)">'+t('sv_resp_count').replace('{n}',cnt)+'</div>';
+    html+='</div>';
+    html+='<div style="display:flex;flex-direction:column;gap:7px">';
+    html+='<button class="btn btn-primary btn-sm" onclick="openSurveyEditor(\''+sv.id+'\')">'+t('sv_edit')+'</button>';
+    html+='<a class="btn btn-outline btn-sm" href="'+window.location.pathname+'?survey='+sv.id+'" target="_blank">'+t('sv_preview')+'</a>';
+    html+='</div></div></div>';
+  });
+  document.getElementById('surveys-list').innerHTML=html;
+}
+
+// ─────────────────────────────────────────────
+// SURVEY EDITOR
+// ─────────────────────────────────────────────
+function openSurveyEditor(id){
+  editingSurveyId=id;
+  var sv=getSurveys().find(function(s){return s.id===id});
+  if(!sv) return;
+  document.getElementById('ed-name-ar').value=sv.nameAr;
+  document.getElementById('ed-name-en').value=sv.nameEn;
+  renderEditorQuestions(sv.questions);
+  openOv('ov-editor');
+}
+function renderEditorQuestions(questions){
+  var html='';
+  questions.forEach(function(q,i){
+    html+='<div class="qcard" id="edq-'+q.id+'">';
+    html+='<div class="q-tag">'+q.type.toUpperCase()+'</div>';
+    html+='<div class="q-acts">';
+    html+='<div class="q-ab" onclick="edMoveQ(\''+q.id+'\',\'up\')">↑</div>';
+    html+='<div class="q-ab" onclick="edMoveQ(\''+q.id+'\',\'dn\')">↓</div>';
+    html+='<div class="q-ab" onclick="edDelQ(\''+q.id+'\')">✕</div>';
+    html+='</div>';
+    html+='<div class="fg" style="margin-bottom:8px"><label style="font-size:11px">AR</label><input class="fi" style="font-size:13px" value="'+esc(q.textAr)+'" onchange="edUpdateQ(\''+q.id+'\',\'textAr\',this.value)"></div>';
+    html+='<div class="fg" style="margin-bottom:0"><label style="font-size:11px">EN</label><input class="fi" style="font-size:13px" value="'+esc(q.textEn||'')+'" onchange="edUpdateQ(\''+q.id+'\',\'textEn\',this.value)"></div>';
+    html+='</div>';
+  });
+  if(!html) html='<div class="empty" style="padding:20px"><span class="empty-ic" style="font-size:32px">❓</span><div class="empty-t" style="font-size:13px">لا توجد أسئلة — أضف سؤالاً</div></div>';
+  document.getElementById('ed-questions-list').innerHTML=html;
+}
+function edUpdateQ(id, field, val){
+  var surveys=getSurveys();
+  var sv=surveys.find(function(s){return s.id===editingSurveyId});
+  if(!sv) return;
+  var q=sv.questions.find(function(q){return q.id===id});
+  if(q) q[field]=val;
+  lsSet('mcx_surveys',surveys);
+}
+function edAddQ(type){
+  var surveys=getSurveys();
+  var sv=surveys.find(function(s){return s.id===editingSurveyId});
+  if(!sv) return;
+  var defaults={
+    csat:{ar:'ما مدى رضاك؟',en:'How satisfied are you?'},
+    nps:{ar:'ما مدى احتمال التوصية؟',en:'How likely are you to recommend us?'},
+    ces:{ar:'ما مدى سهولة التعامل معنا؟',en:'How easy was it to work with us?'},
+    text:{ar:'تعليقات إضافية؟',en:'Any additional comments?'},
+    choice:{ar:'اختر من التالي:',en:'Choose from the following:'},
+    yn:{ar:'هل...؟',en:'Did...?'},
+    phone:{ar:'رقم جوالك (اختياري)',en:'Your phone number (optional)'},
+    info:{ar:'اسمك الكريم',en:'Your name'}
+  };
+  var d=defaults[type]||{ar:'سؤال جديد',en:'New question'};
+  sv.questions.push({id:'q'+Date.now(),type:type,textAr:d.ar,textEn:d.en});
+  lsSet('mcx_surveys',surveys);
+  renderEditorQuestions(sv.questions);
+}
+function edDelQ(id){
+  var surveys=getSurveys();
+  var sv=surveys.find(function(s){return s.id===editingSurveyId});
+  if(!sv) return;
+  sv.questions=sv.questions.filter(function(q){return q.id!==id});
+  lsSet('mcx_surveys',surveys);
+  renderEditorQuestions(sv.questions);
+}
+function edMoveQ(id, dir){
+  var surveys=getSurveys();
+  var sv=surveys.find(function(s){return s.id===editingSurveyId});
+  if(!sv) return;
+  var i=sv.questions.findIndex(function(q){return q.id===id});
+  if(dir==='up'&&i>0){var tmp=sv.questions[i-1];sv.questions[i-1]=sv.questions[i];sv.questions[i]=tmp;}
+  if(dir==='dn'&&i<sv.questions.length-1){var tmp2=sv.questions[i];sv.questions[i]=sv.questions[i+1];sv.questions[i+1]=tmp2;}
+  lsSet('mcx_surveys',surveys);
+  renderEditorQuestions(sv.questions);
+}
+function saveSurveyEdits(){
+  var surveys=getSurveys();
+  var sv=surveys.find(function(s){return s.id===editingSurveyId});
+  if(sv){
+    sv.nameAr=document.getElementById('ed-name-ar').value||sv.nameAr;
+    sv.nameEn=document.getElementById('ed-name-en').value||sv.nameEn;
+    lsSet('mcx_surveys',surveys);
+  }
+  closeOv('ov-editor');
+  renderSurveys();
+}
+
+// ─────────────────────────────────────────────
+// SEND
+// ─────────────────────────────────────────────
+function updateSendPreview(){
+  var seg=document.getElementById('send-seg-sel')?document.getElementById('send-seg-sel').value:'companies';
+  var contacts=getContacts(seg);
+  var infoEl=document.getElementById('send-contacts-info');
+  if(contacts.length>0){
+    infoEl.innerHTML=t('send_contacts_info').replace('{n}',contacts.length);
+  } else {
+    infoEl.innerHTML=t('send_no_contacts');
+  }
+  var svType=document.getElementById('send-sv-sel')?document.getElementById('send-sv-sel').value:'companies';
+  var url=window.location.href.split('?')[0]+'?survey='+svType;
+  var el=document.getElementById('sv-direct-url');
+  if(el) el.textContent=url;
+  document.getElementById('send-msgs-section').style.display='none';
+}
+function generateSendMessages(){
+  var seg=document.getElementById('send-seg-sel').value;
+  var svt=document.getElementById('send-sv-sel').value;
+  var contacts=getContacts(seg);
+  if(contacts.length===0){
+    document.getElementById('send-contacts-info').innerHTML=t('send_no_contacts');
+    return;
+  }
+  var baseUrl=window.location.href.split('?')[0]+'?survey='+svt;
+  var tmpl=t('msg_template');
+  var companyName=LANG==='ar'?'مواردكم لحلول الأعمال':'Mawaridcom for Business Solutions';
+  var msgs=contacts.map(function(c){
+    var url=baseUrl+'&id='+c.id;
+    return tmpl.replace('{name}',c.name).replace('{company}',companyName).replace('{url}',url);
+  });
+  var html='';
+  contacts.forEach(function(c,i){
+    html+='<div style="background:var(--surface2);border-radius:10px;padding:12px;margin-bottom:8px;border:1px solid var(--border);font-size:12px">';
+    html+='<div style="font-weight:700;margin-bottom:4px;color:var(--primary)">'+esc(c.name)+(c.phone?' · '+esc(c.phone):'')+'</div>';
+    html+='<div style="white-space:pre-wrap;color:var(--text2)">'+esc(msgs[i])+'</div>';
+    html+='</div>';
+  });
+  document.getElementById('msgs-list').innerHTML=html;
+  document.getElementById('send-msgs-section').style.display='block';
+  window._allMsgs=msgs;
+}
+function copyAllMessages(){
+  var msgs=window._allMsgs||[];
+  if(!msgs.length){alert(LANG==='ar'?'ولّد الرسائل أولاً':'Generate messages first');return;}
+  navigator.clipboard.writeText(msgs.join('\n\n---\n\n')).then(function(){
+    alert(t('copy_ok')+' ('+msgs.length+' '+(LANG==='ar'?'رسائل':'messages')+')');
+  }).catch(function(){
+    var ta=document.createElement('textarea');
+    ta.value=msgs.join('\n\n---\n\n');
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    alert(t('copy_ok'));
+  });
+}
+function copyDirectLink(){
+  copyText('sv-direct-url');
+}
+
+// ─────────────────────────────────────────────
+// RESPONSES
+// ─────────────────────────────────────────────
+function filterResponses(val, key){
+  if(val) respFilters[key]=val; else delete respFilters[key];
+  renderResponses();
+}
+function renderResponses(){
+  var resp=getResponses();
+  if(respFilters.seg) resp=resp.filter(function(r){return r.segment===respFilters.seg});
+  if(respFilters.status) resp=resp.filter(function(r){return r.status===respFilters.status});
+  var el=document.getElementById('responses-list');
+  if(!el) return;
+  if(resp.length===0){
+    el.innerHTML='<div class="empty"><span class="empty-ic">📭</span><div class="empty-t">'+(LANG==='ar'?'لا توجد ردود':'No responses found')+'</div></div>';
+    return;
+  }
+  var seg_colors={companies:getComputedStyle(document.documentElement).getPropertyValue('--primary'),candidates:'#d97706',outsource:'#1fa6df'};
+  el.innerHTML=resp.reverse().map(function(r){
+    var nc=r.nps>=9?'var(--success)':r.nps<=6?'var(--danger)':'var(--warn)';
+    var sc=r.csat>=4?'var(--success)':r.csat<=2?'var(--danger)':'var(--warn)';
+    var cc=r.ces>=5?'var(--success)':r.ces<=3?'var(--danger)':'var(--warn)';
+    var avBg=seg_colors[r.segment]||'var(--primary)';
+    var name=LANG==='ar'?r.nameAr:r.nameEn;
+    var comment=LANG==='ar'?r.commentAr:r.commentEn;
+    return '<div class="resp-card">'+
+      '<div class="resp-top">'+
+      '<div class="resp-av" style="background:'+avBg+'">'+esc((name||'?').charAt(0))+'</div>'+
+      '<div class="resp-info"><div class="resp-name">'+esc(name)+'</div><div class="resp-meta">'+r.date+' · <span class="badge b-info" style="font-size:10px">'+((LANG==='ar')?{companies:'الشركات',candidates:'المرشحون',outsource:'الموظفون الخارجيون'}[r.segment]:{companies:'Companies',candidates:'Candidates',outsource:'Outsourced'}[r.segment])+'</span></div></div>'+
+      '<span class="badge '+(r.status==='done'?'b-success':'b-warn')+'">'+(r.status==='done'?t('resp_done'):t('resp_followup'))+'</span>'+
+      '</div>'+
+      '<div class="score-pills">'+
+      '<div class="score-pill"><span class="pv" style="color:'+nc+'">'+r.nps+'</span><span class="pl">NPS</span></div>'+
+      '<div class="score-pill"><span class="pv" style="color:'+sc+'">'+r.csat+'/5</span><span class="pl">CSAT</span></div>'+
+      '<div class="score-pill"><span class="pv" style="color:'+cc+'">'+r.ces+'/7</span><span class="pl">CES</span></div>'+
+      '</div>'+
+      (comment?'<div class="resp-comment">💬 &ldquo;'+esc(comment)+'&rdquo;</div>':'')+
+      (r.status==='followup'?'<div style="margin-top:10px;display:flex;gap:7px"><button class="btn btn-outline btn-sm">'+t('resp_followup_btn')+'</button><button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="deleteResponse(\''+r.id+'\')">'+t('resp_del_btn')+'</button></div>':
+       '<div style="margin-top:8px;display:flex;justify-content:flex-end"><button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="deleteResponse(\''+r.id+'\')">'+t('resp_del_btn')+'</button></div>')+
+      '</div>';
+  }).join('');
+}
+function deleteResponse(id){
+  var resp=getResponses().filter(function(r){return r.id!==id});
+  lsSet('mcx_responses',resp);
+  renderResponses();
+  document.getElementById('resp-count').textContent=resp.length;
+}
+function clearAllResponses(){
+  showConfirm(t('clear_resp_confirm'),function(){
+    lsSet('mcx_responses',[]);
+    renderResponses();
+    document.getElementById('resp-count').textContent=0;
+  });
+}
+function exportResponsesCSV(){
+  var resp=getResponses();
+  var hdrs=['التاريخ','الاسم','الشريحة','NPS','CSAT','CES','الحالة','التعليق'];
+  var rows=[hdrs.join(',')];
+  resp.forEach(function(r){
+    rows.push([r.date,r.nameAr,r.segment,r.nps,r.csat,r.ces,r.status,(r.commentAr||'').replace(/,/g,' ')].join(','));
+  });
+  downloadFile(rows.join('\n'),'responses_'+new Date().toISOString().slice(0,10)+'.csv','text/csv;charset=utf-8;');
+}
+
+// ─────────────────────────────────────────────
+// INTEGRATIONS
+// ─────────────────────────────────────────────
+function saveScriptUrl(){
+  var url=document.getElementById('script-url').value.trim();
+  if(!url){alert(LANG==='ar'?'أدخل الرابط':'Enter the URL');return;}
+  lsSet('mcx_script_url',url);
+  alert(t('conn_ok').replace('✅ الاتصال ناجح!','✅ تم الحفظ'));
+}
+function testConnection(){
+  var url=ls('mcx_script_url','')||document.getElementById('script-url').value.trim();
+  var el=document.getElementById('conn-result');
+  if(!url){el.innerHTML='<div class="alert al-warn"><span class="alert-ic">⚠️</span>'+( LANG==='ar'?'أدخل الرابط أولاً':'Enter the URL first')+'</div>';return;}
+  el.innerHTML='<div class="alert al-info"><span class="alert-ic">🔄</span>'+t('conn_testing')+'</div>';
+  fetch(url).then(function(r){return r.json()}).then(function(){
+    el.innerHTML='<div class="alert al-success"><span class="alert-ic">✅</span>'+t('conn_ok')+'</div>';
+  }).catch(function(){
+    el.innerHTML='<div class="alert al-danger"><span class="alert-ic">❌</span>'+t('conn_fail')+'</div>';
+  });
+}
+
+// ─────────────────────────────────────────────
+// SETTINGS
+// ─────────────────────────────────────────────
+function loadSettings(){
+  var s=getSettings();
+  var inp=document.getElementById('set-name'); if(inp) inp.value=s.companyName||'مواردكم';
+  var em=document.getElementById('set-email'); if(em) em.value=s.notifyEmail||'basemaleisawi@gmail.com';
+  var thr=document.getElementById('set-threshold'); if(thr) thr.value=s.npsThreshold||7;
+  var tn=document.getElementById('toggle-notif'); if(tn){tn.classList.toggle('on',!!s.notifyDetractors);}
+  var ta=document.getElementById('toggle-auto'); if(ta){ta.classList.toggle('on',!!s.autoSend);}
+}
+function toggleSetting(key,el){
+  el.classList.toggle('on');
+  var s=getSettings(); s[key]=el.classList.contains('on'); lsSet('mcx_settings',s);
+}
+function saveSettings(){
+  var s=getSettings();
+  var nm=document.getElementById('set-name'); if(nm){s.companyName=nm.value; applyBrandName();}
+  var em=document.getElementById('set-email'); if(em) s.notifyEmail=em.value;
+  var thr=document.getElementById('set-threshold'); if(thr) s.npsThreshold=parseInt(thr.value)||7;
+  lsSet('mcx_settings',s);
+  alert(LANG==='ar'?'✅ تم حفظ الإعدادات':'✅ Settings saved');
+}
+function setPrimaryColor(c,sw){
+  document.documentElement.style.setProperty('--primary',c);
+  document.documentElement.style.setProperty('--dark',shadeColor(c,-20));
+  document.documentElement.style.setProperty('--mid',shadeColor(c,15));
+  if(sw){document.querySelectorAll('.swatch').forEach(function(s){s.classList.remove('on')});sw.classList.add('on');}
+}
+function shadeColor(color,pct){
+  var n=parseInt(color.replace('#',''),16),r=Math.min(255,Math.max(0,(n>>16)+Math.round(2.55*pct))),g=Math.min(255,Math.max(0,((n>>8)&0xFF)+Math.round(2.55*pct))),b=Math.min(255,Math.max(0,(n&0xFF)+Math.round(2.55*pct)));
+  return '#'+((r<<16)|(g<<8)|b).toString(16).padStart(6,'0');
+}
+function applyBrandName(){
+  var nm=document.getElementById('set-name'); if(!nm) return;
+  document.getElementById('sb-name-ar').textContent=nm.value;
+  document.title=nm.value+' — نظام إدارة تجربة العميل';
+}
+function exportAllData(){
+  var data={surveys:getSurveys(),responses:getResponses(),contacts_companies:getContacts('companies'),contacts_candidates:getContacts('candidates'),contacts_outsource:getContacts('outsource'),settings:getSettings(),exported:new Date().toISOString()};
+  downloadFile(JSON.stringify(data,null,2),'mawaridcom_cx_backup_'+new Date().toISOString().slice(0,10)+'.json','application/json');
+}
+function resetSystem(){
+  showConfirm(t('reset_confirm'),function(){
+    localStorage.removeItem('mcx_init');
+    localStorage.removeItem('mcx_surveys');
+    localStorage.removeItem('mcx_responses');
+    localStorage.removeItem('mcx_contacts_companies');
+    localStorage.removeItem('mcx_contacts_candidates');
+    localStorage.removeItem('mcx_contacts_outsource');
+    localStorage.removeItem('mcx_settings');
+    initData(); renderDash(); goto('dashboard');
+  });
+}
+
+// ─────────────────────────────────────────────
+// TABS
+// ─────────────────────────────────────────────
+function switchTab(btn, paneId){
+  var tabs=btn.closest('.tabs');
+  if(tabs) tabs.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('on')});
+  btn.classList.add('on');
+  var parent=btn.closest('.page')||document;
+  parent.querySelectorAll('.tab-p').forEach(function(p){p.classList.remove('on')});
+  var pane=document.getElementById(paneId);
+  if(pane) pane.classList.add('on');
+}
+
+// ─────────────────────────────────────────────
+// MODALS
+// ─────────────────────────────────────────────
+function openOv(id){ var el=document.getElementById(id); if(el){el.classList.add('on');} }
+function closeOv(id){ var el=document.getElementById(id); if(el){el.classList.remove('on');} }
+document.querySelectorAll('.ov').forEach(function(ov){
+  ov.addEventListener('click',function(e){if(e.target===ov) ov.classList.remove('on')});
+});
+function showConfirm(msg, cb){
+  document.getElementById('conf-msg').textContent=msg;
+  confirmCallback=cb;
+  openOv('ov-confirm');
+}
+function confirmAction(){
+  closeOv('ov-confirm');
+  if(confirmCallback) confirmCallback();
+  confirmCallback=null;
+}
+
+// ─────────────────────────────────────────────
+// UTILITIES
+// ─────────────────────────────────────────────
+function esc(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function copyText(id){
+  var el=document.getElementById(id); if(!el) return;
+  var txt=el.textContent||el.value||'';
+  navigator.clipboard.writeText(txt).then(function(){alert(t('copy_ok'))}).catch(function(){
+    var ta=document.createElement('textarea'); ta.value=txt;
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    alert(t('copy_ok'));
+  });
+}
+function copyCode(id){ copyText(id); }
+function downloadFile(content,filename,mime){
+  var blob=new Blob(['\uFEFF'+content],{type:mime||'text/plain'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url; a.download=filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ─────────────────────────────────────────────
+// SURVEY PAGE (for clients)
+// ─────────────────────────────────────────────
+function setSvLang(l){
+  svLang=l;
+  document.getElementById('sv-btn-ar').classList.toggle('on',l==='ar');
+  document.getElementById('sv-btn-en').classList.toggle('on',l==='en');
+  var sp=document.getElementById('survey-page');
+  sp.dir=l==='ar'?'rtl':'ltr';
+  sp.lang=l;
+  renderSurveyPage();
+}
+function renderSurveyPage(){
+  var surveys=getSurveys();
+  var sv=surveys.find(function(s){return s.id===svType});
+  if(!sv) return;
+  document.getElementById('sv-co-name').textContent=svLang==='ar'?'مواردكم لحلول الأعمال':'Mawaridcom for Business Solutions';
+  document.getElementById('sv-title').textContent=svLang==='ar'?sv.nameAr:sv.nameEn;
+  document.getElementById('sv-submit-lbl').textContent=svLang==='ar'?'إرسال التقييم':'Submit Survey';
+  document.getElementById('sv-privacy').textContent=svLang==='ar'?'بياناتك محمية ومحفوظة بسرية تامة 🔒':'Your data is protected and kept strictly confidential 🔒';
+  var qs=sv.questions;
+  var total=qs.length;
+  var html='';
+  qs.forEach(function(q,i){
+    html+='<div class="sv-qcard" id="svq-'+q.id+'">';
+    html+='<div class="sv-step">'+( svLang==='ar'?'السؤال '+(i+1)+' من '+total:'Question '+(i+1)+' of '+total)+'</div>';
+    html+='<div class="sv-qt">'+(svLang==='ar'?q.textAr:q.textEn)+'</div>';
+    html+=renderSvInput(q, svLang);
+    html+='</div>';
+  });
+  document.getElementById('sv-form').innerHTML=html;
+}
+function renderSvInput(q, l){
+  var id='sv_'+q.id;
+  if(q.type==='info'||q.type==='phone') return '<input class="fi" id="'+id+'" placeholder="'+(l==='ar'?'اكتب هنا...':'Type here...')+'" type="'+(q.type==='phone'?'tel':'text')+'"><br>';
+  if(q.type==='text') return '<textarea class="fi" id="'+id+'" style="min-height:90px" placeholder="'+(l==='ar'?'اكتب هنا...':'Write here...')+'"></textarea>';
+  if(q.type==='csat') return '<div class="stars-row" id="'+id+'">'+[1,2,3,4,5].map(function(n){return '<button class="star '+(n<=4?'lit':'')+'" onclick="svSetStar(\''+id+'\','+n+')">★</button>'}).join('')+'</div><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);max-width:180px;margin-top:5px"><span>'+(l==='ar'?'غير راضٍ':'Not satisfied')+'</span><span>'+(l==='ar'?'راضٍ جداً':'Very satisfied')+'</span></div>';
+  if(q.type==='nps') return '<div class="nps-row" id="'+id+'">'+[0,1,2,3,4,5,6,7,8,9,10].map(function(n){return '<div class="nps-num '+(n<=6?'ndet':n<=8?'npas':'npro')+'" onclick="svSetNps(\''+id+'\','+n+')">'+n+'</div>'}).join('')+'</div><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:5px"><span>'+(l==='ar'?'غير محتمل':'Not likely')+'</span><span>'+(l==='ar'?'محتمل جداً':'Very likely')+'</span></div>';
+  if(q.type==='ces') return '<div class="ces-row" id="'+id+'">'+[1,2,3,4,5,6,7].map(function(n){return '<div class="ces-n" onclick="svSetCes(\''+id+'\','+n+')">'+n+'</div>'}).join('')+'</div><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:5px"><span>'+(l==='ar'?'صعب جداً':'Very difficult')+'</span><span>'+(l==='ar'?'سهل جداً':'Very easy')+'</span></div>';
+  if(q.type==='choice'){
+    var opts=l==='ar'?(q.optionsAr||[]):(q.optionsEn||q.optionsAr||[]);
+    return '<div class="choices-list" id="'+id+'">'+opts.map(function(opt){return '<div class="choice-it" onclick="svToggleChoice(this)"><div class="choice-dot"></div>'+esc(opt)+'</div>'}).join('')+'</div>';
+  }
+  if(q.type==='yn') return '<div class="yn-row" id="'+id+'"><div class="yn-btn yn-yes" onclick="svSetYn(\''+id+'\',\'yes\',this)">'+(l==='ar'?'نعم ✅':'Yes ✅')+'</div><div class="yn-btn yn-no" onclick="svSetYn(\''+id+'\',\'no\',this)">'+(l==='ar'?'لا ❌':'No ❌')+'</div></div>';
+  return '';
+}
+function svSetStar(id,n){
+  svAnswers[id]=n;
+  document.querySelectorAll('#'+id+' .star').forEach(function(s,i){s.classList.toggle('lit',i<n)});
+  updateSvProgress();
+}
+function svSetNps(id,n){
+  svAnswers[id]=n;
+  document.querySelectorAll('#'+id+' .nps-num').forEach(function(el){el.style.fontWeight='';el.style.boxShadow=''});
+  var el=document.querySelector('#'+id+' .nps-num:nth-child('+(n+1)+')');
+  if(el){el.style.fontWeight='900';el.style.boxShadow='0 0 0 3px var(--primary)';}
+  updateSvProgress();
+}
+function svSetCes(id,n){
+  svAnswers[id]=n;
+  document.querySelectorAll('#'+id+' .ces-n').forEach(function(el,i){el.classList.toggle('sel',i===n-1)});
+  updateSvProgress();
+}
+function svSetYn(id,v,el){
+  svAnswers[id]=v;
+  el.parentElement.querySelectorAll('.yn-btn').forEach(function(b){b.classList.remove('sel')});
+  el.classList.add('sel');
+  updateSvProgress();
+}
+function svToggleChoice(el){
+  el.classList.toggle('sel');
+  updateSvProgress();
+}
+function updateSvProgress(){
+  var surveys=getSurveys();
+  var sv=surveys.find(function(s){return s.id===svType});
+  if(!sv) return;
+  var filled=0;
+  sv.questions.forEach(function(q){
+    var id='sv_'+q.id;
+    if(q.type==='text'||q.type==='info'||q.type==='phone'){
+      var el=document.getElementById(id); if(el&&el.value.trim()) filled++;
+    } else if(svAnswers[id]!==undefined){ filled++; }
+    else if(q.type==='choice'){
+      var sel=document.querySelectorAll('#'+id+' .choice-it.sel');
+      if(sel.length>0) filled++;
+    }
+  });
+  var pct=Math.round((filled/sv.questions.length)*100);
+  var pf=document.getElementById('sv-pf'); if(pf) pf.style.width=Math.max(5,pct)+'%';
+}
+function submitSurvey(){
+  var surveys=getSurveys();
+  var sv=surveys.find(function(s){return s.id===svType});
+  if(!sv) return;
+  // collect answers
+  var data={type:svType, lang:svLang, name:'', email:'', phone:'', company:'', choices:[]};
+  sv.questions.forEach(function(q){
+    var id='sv_'+q.id;
+    if(q.type==='info'){
+      var val=(document.getElementById(id)||{}).value||'';
+      if(q.textAr.includes('شركة')||q.textEn.toLowerCase().includes('company')) data.company=val;
+      else data.name=val;
+    }
+    else if(q.type==='phone') data.phone=(document.getElementById(id)||{}).value||'';
+    else if(q.type==='text') data.comment=(document.getElementById(id)||{}).value||'';
+    else if(q.type==='csat') data.csat=svAnswers[id];
+    else if(q.type==='nps') data.nps=svAnswers[id];
+    else if(q.type==='ces') data.ces=svAnswers[id];
+    else if(q.type==='yn') data.salaryIssue=svAnswers[id];
+    else if(q.type==='choice'){
+      var sel=document.querySelectorAll('#'+id+' .choice-it.sel');
+      sel.forEach(function(el){data.choices.push(el.textContent.trim())});
+    }
+  });
+  // save locally
+  var resp=getResponses();
+  var urlP=new URLSearchParams(window.location.search);
+  resp.push({
+    id:'r'+Date.now(), segment:svType,
+    nameAr:data.name||data.company||'مستجيب',
+    nameEn:data.name||data.company||'Respondent',
+    csat:data.csat||0, nps:data.nps||0, ces:data.ces||0,
+    commentAr:data.comment||'', commentEn:data.comment||'',
+    status:(data.nps!==undefined&&data.nps<7)?'followup':'done',
+    date:new Date().toISOString().slice(0,10),
+    contactId:urlP.get('id')||null
+  });
+  lsSet('mcx_responses',resp);
+  // send to script
+  var scriptUrl=ls('mcx_script_url','');
+  if(scriptUrl){
+    fetch(scriptUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).catch(function(){});
+  }
+  // show thanks
+  document.getElementById('sv-form').style.display='none';
+  document.getElementById('sv-footer').style.display='none';
+  document.getElementById('sv-pf').style.width='100%';
+  document.getElementById('sv-thanks-h').textContent=svLang==='ar'?'شكراً لك!':'Thank You!';
+  document.getElementById('sv-thanks-p').textContent=svLang==='ar'?'تم إرسال تقييمك بنجاح. مواردكم تقدّر وقتك ورأيك الكريم.':'Your feedback was submitted successfully. Mawaridcom appreciates your time.';
+  document.getElementById('sv-thanks').classList.add('on');
+}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+function init(){
+  initData();
+  var params=new URLSearchParams(window.location.search);
+  var svParam=params.get('survey');
+  if(svParam&&['companies','candidates','outsource'].indexOf(svParam)>=0){
+    // Survey mode
+    document.getElementById('admin').style.display='none';
+    var sp=document.getElementById('survey-page');
+    sp.classList.add('on');
+    svType=svParam; svLang=LANG;
+    sp.dir=LANG==='ar'?'rtl':'ltr'; sp.lang=LANG;
+    renderSurveyPage();
+    // load script url
+    var storedUrl=ls('mcx_script_url','');
+    if(storedUrl) {} // already set
+  } else {
+    // Admin mode
+    var storedLang=ls('mcx_settings',{}).lang||'ar';
+    setLang(storedLang);
+    var storedUrl=ls('mcx_script_url','');
+    if(storedUrl){ var si=document.getElementById('script-url'); if(si) si.value=storedUrl; }
+    renderDash();
+  }
+}
+
+init();
+</script>
+</body>
+</html>
