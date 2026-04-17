@@ -1040,6 +1040,7 @@ en:{
 // ─────────────────────────────────────────────
 // STATE
 // ─────────────────────────────────────────────
+const SCRIPT_URL_DEFAULT = 'https://script.google.com/macros/s/AKfycbxtbjCWU3s4rcjy1uvEiQafaA_SvcwGpzWebslIpyPePkNqwEtpJnvzhuHNna8Xjrr7/exec';
 var LANG = 'ar';
 var currentPage = 'dashboard';
 var currentContactTab = 'companies';
@@ -1570,7 +1571,7 @@ function saveScriptUrl(){
   alert(t('conn_ok').replace('✅ الاتصال ناجح!','✅ تم الحفظ'));
 }
 function testConnection(){
-  var url=ls('mcx_script_url','')||document.getElementById('script-url').value.trim();
+  var url=ls('mcx_script_url','')||document.getElementById('script-url').value.trim()||SCRIPT_URL_DEFAULT;
   var el=document.getElementById('conn-result');
   if(!url){el.innerHTML='<div class="alert al-warn"><span class="alert-ic">⚠️</span>'+( LANG==='ar'?'أدخل الرابط أولاً':'Enter the URL first')+'</div>';return;}
   el.innerHTML='<div class="alert al-info"><span class="alert-ic">🔄</span>'+t('conn_testing')+'</div>';
@@ -1820,7 +1821,7 @@ function submitSurvey(){
   });
   lsSet('mcx_responses',resp);
   // send to script
-  var scriptUrl=ls('mcx_script_url','');
+  var scriptUrl=ls('mcx_script_url','')||SCRIPT_URL_DEFAULT;
   if(scriptUrl){
     fetch(scriptUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).catch(function(){});
   }
@@ -1849,13 +1850,13 @@ function init(){
     sp.dir=LANG==='ar'?'rtl':'ltr'; sp.lang=LANG;
     renderSurveyPage();
     // load script url
-    var storedUrl=ls('mcx_script_url','');
+    var storedUrl=ls('mcx_script_url','')||SCRIPT_URL_DEFAULT;
     if(storedUrl) {} // already set
   } else {
     // Admin mode
     var storedLang=ls('mcx_settings',{}).lang||'ar';
     setLang(storedLang);
-    var storedUrl=ls('mcx_script_url','');
+    var storedUrl=ls('mcx_script_url','')||SCRIPT_URL_DEFAULT;
     if(storedUrl){ var si=document.getElementById('script-url'); if(si) si.value=storedUrl; }
     renderDash();
   }
