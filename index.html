@@ -1069,9 +1069,9 @@ function initData(){
       {id:'q6',type:'text',textAr:'ما الذي يمكننا تحسينه في خدماتنا؟',textEn:'What can we improve in our services?'}
     ]},
     { id:'candidates', nameAr:'استبيان تجربة المرشحين والأفراد', nameEn:'Candidate Experience Survey', segment:'candidates', active:true, questions:[
-      {id:'name',type:'info',textAr:'الاسم',textEn:'Full Name'},
-      {id:'email',type:'info',textAr:'البريد الإلكتروني',textEn:'Email Address'},
-      {id:'phone',type:'phone',textAr:'رقم الجوال',textEn:'Mobile Number'},
+      {id:'name',type:'info',textAr:'الاسم',textEn:'Full Name',required:false},
+      {id:'email',type:'info',textAr:'البريد الإلكتروني',textEn:'Email Address',required:false},
+      {id:'phone',type:'phone',textAr:'رقم الجوال',textEn:'Mobile Number',required:false},
       {id:'q1',type:'csat',textAr:'كيف تقيّم تجربتك مع مواردكم بشكل عام؟',textEn:'How do you rate your experience with Mawaridcom overall?'},
       {id:'q2',type:'nps',textAr:'هل ستوصي بمواردكم لأصدقائك وعائلتك؟',textEn:'Would you recommend Mawaridcom to your friends and family?'},
       {id:'q3',type:'ces',textAr:'كم كانت عملية التسجيل والتوظيف سهلة؟',textEn:'How easy was the registration and placement process?'},
@@ -1079,10 +1079,10 @@ function initData(){
       {id:'q5',type:'text',textAr:'ما الذي نحتاج تحسينه؟',textEn:'What do we need to improve?'}
     ]},
     { id:'outsource', nameAr:'تقييم الموظف الخارجي', nameEn:'Outsourced Employee Evaluation', segment:'outsource', active:true, questions:[
-      {id:'name',type:'info',textAr:'الاسم',textEn:'Full Name'},
-      {id:'email',type:'info',textAr:'البريد الإلكتروني',textEn:'Email Address'},
-      {id:'q6',type:'phone',textAr:'رقم جوالك للتواصل (اختياري)',textEn:'Your phone number for contact (optional)',required:false},
-      {id:'company',type:'info',textAr:'الشركة المضيفة',textEn:'Host Company'},
+      {id:'name',type:'info',textAr:'الاسم',textEn:'Full Name',required:false},
+      {id:'email',type:'info',textAr:'البريد الإلكتروني',textEn:'Email Address',required:false},
+      {id:'phone',type:'phone',textAr:'رقم الجوال',textEn:'Mobile Number',required:false},
+      {id:'company',type:'info',textAr:'الشركة المضيفة',textEn:'Host Company',required:false},
       {id:'q1',type:'csat',textAr:'هل بيئة العمل في الشركة المضيفة مناسبة لك؟',textEn:'Is the work environment at the host company suitable for you?'},
       {id:'q2',type:'nps',textAr:'ما مدى احتمال استمرارك في العمل مع مواردكم؟',textEn:'How likely are you to continue working with Mawaridcom?'},
       {id:'q3',type:'ces',textAr:'ما مدى سهولة التعامل مع الإجراءات الإدارية في مواردكم؟',textEn:'How easy are the administrative procedures at Mawaridcom?'},
@@ -1816,7 +1816,7 @@ function submitSurvey(){
       return;
     }
 
-    if(q.id==='phone' || q.type==='phone'){
+    if(q.id==='phone'){
       data.phone=((document.getElementById(id)||{}).value||'').trim();
       return;
     }
@@ -1826,7 +1826,18 @@ function submitSurvey(){
       return;
     }
 
-    if(q.id==='comment' || q.type==='text'){
+    if(q.type==='info'){
+      var infoVal=((document.getElementById(id)||{}).value||'').trim();
+      if(!data.name) data.name=infoVal;
+      return;
+    }
+
+    if(q.type==='phone'){
+      data.phone=((document.getElementById(id)||{}).value||'').trim();
+      return;
+    }
+
+    if(q.type==='text'){
       data.comment=((document.getElementById(id)||{}).value||'').trim();
       return;
     }
@@ -1853,22 +1864,10 @@ function submitSurvey(){
 
     if(q.type==='choice'){
       var sel=document.querySelectorAll('#'+id+' .choice-it.sel');
-      sel.forEach(function(el){data.choices.push(el.textContent.trim())});
+      sel.forEach(function(el){
+        data.choices.push(el.textContent.trim());
+      });
       return;
-    }
-
-    if(q.type==='info'){
-      var val=((document.getElementById(id)||{}).value||'').trim();
-      var ar=(q.textAr||'');
-      var en=(q.textEn||'').toLowerCase();
-
-      if(q.id==='email' || ar.indexOf('البريد')>=0 || en.indexOf('email')>=0){
-        data.email=val;
-      } else if(q.id==='company' || ar.indexOf('الشركة')>=0 || en.indexOf('company')>=0 || en.indexOf('host company')>=0){
-        data.company=val;
-      } else {
-        data.name=val;
-      }
     }
   });
 
@@ -1887,7 +1886,7 @@ function submitSurvey(){
     ces:data.ces||0,
     commentAr:data.comment||'',
     commentEn:data.comment||'',
-    status:(data.nps!==undefined&&Number(data.nps)<7)?'followup':'done',
+    status:(data.nps!==undefined && Number(data.nps)<7)?'followup':'done',
     date:new Date().toISOString().slice(0,10),
     contactId:urlP.get('id')||null
   });
@@ -1895,7 +1894,12 @@ function submitSurvey(){
 
   var scriptUrl=ls('mcx_script_url','')||SCRIPT_URL_DEFAULT;
   if(scriptUrl){
-    fetch(scriptUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).catch(function(){});
+    fetch(scriptUrl,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(data)
+    }).catch(function(){});
   }
 
   document.getElementById('sv-form').style.display='none';
